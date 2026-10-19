@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>모여집중 | 함께 시작해요</title>
+<style>:root{font-family:system-ui,-apple-system,sans-serif;color:#e8edf5;background:#101827}*{box-sizing:border-box}body{margin:0}main{max-width:700px;margin:7vh auto;padding:24px}h1{font-size:2.2rem}p{color:#b7c5d7}.panel{background:#1c293b;border:1px solid #34465e;border-radius:20px;padding:24px;margin-top:22px}label{display:block;margin-bottom:8px}input{width:100%;padding:14px;background:#111b2b;color:white;border:1px solid #607089;border-radius:10px;font-size:1rem}button{background:#6fbbac;border:0;border-radius:10px;padding:13px 20px;font-weight:700;cursor:pointer;margin:6px 5px 6px 0}button:focus-visible,input:focus-visible{outline:3px solid #f6ce7c}#clock{font-size:4rem;font-variant-numeric:tabular-nums;text-align:center;margin:24px 0}small{color:#9eacc0}#status{min-height:1.5em}</style></head>
+<body><main><h1>☕ 모여집중</h1><p>혼자 시작하기 어려운 일, 여기서 25분만 함께 시작해요.</p>
+<section class="panel"><label for="task">지금 할 일 한 가지</label><input id="task" maxlength="120" placeholder="예: 보고서 파일 열기" autocomplete="off"><p id="status" aria-live="polite"></p>
+<div id="clock" role="timer" aria-live="off">25:00</div><button id="start">집중 시작</button><button id="pause">일시정지</button><button id="reset">초기화</button></section>
+<p><small>현재는 개인용 시제품입니다. 실시간 공동 접속 기능은 아직 연결되지 않았습니다. 회사 기밀이나 개인정보를 입력하지 마세요.</small></p></main>
+<script>
+const input=document.getElementById('task'),clock=document.getElementById('clock'),status=document.getElementById('status');
+input.value=localStorage.getItem('focusTask')||'';
+input.addEventListener('input',()=>localStorage.setItem('focusTask',input.value));
+let remaining=1500,deadline=null,ticker=null;
+function render(){const n=Math.max(0,remaining);clock.textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');document.title=clock.textContent+' | 모여집중';}
+function stop(){if(ticker)clearInterval(ticker);ticker=null;deadline=null;}
+function tick(){remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));render();if(!remaining){stop();status.textContent='25분 완료! 수고했어요.';}}
+document.getElementById('start').onclick=()=>{if(ticker)return;deadline=Date.now()+remaining*1000;status.textContent='지금 이 한 가지에만 집중해요.';ticker=setInterval(tick,250);tick();};
+document.getElementById('pause').onclick=()=>{if(ticker){tick();stop();status.textContent='일시정지했어요.';}};
+document.getElementById('reset').onclick=()=>{stop();remaining=1500;render();status.textContent='다시 시작할 준비가 됐어요.';};render();
+</script></body></html>
