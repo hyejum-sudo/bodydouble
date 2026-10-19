@@ -177,7 +177,7 @@ function calCat(x){return calCategories.find(c=>c[0]===x)||calCategories[0]}
 function calItems(){return data.items.filter(x=>x.type==='event'||x.type==='habit')}
 function calColorOf(x){return x.color||calCat(x.calendarId|| (x.type==='habit'?'cycle':'default'))[2]}
 function calBg(hex){return /^#[0-9a-f]{6}$/i.test(hex)?hex+'33':'#e9f1fa'}
-function calMinutes(t){if(!/^\\d{2}:\\d{2}$/.test(t||''))return 0;const [h,m]=t.split(':').map(Number);return h*60+m}
+function calMinutes(t){if(!/^\d{2}:\d{2}$/.test(t||''))return 0;const [h,m]=t.split(':').map(Number);return h*60+m}
 function calEndDate(x){return x.endDate||x.date}
 function calOccurs(x,date){if(x.type==='habit'){if(x.startDate&&date<x.startDate)return false;if(Array.isArray(x.days)&&x.days.length)return x.days.includes(calDateObj(date).getDay());return due(x,date)}
 const start=x.date;if(!start||date<start)return false;const end=calEndDate(x);const rule=x.repeat||'none';if(rule==='none')return date<=end;
