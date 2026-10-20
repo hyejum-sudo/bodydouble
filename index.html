@@ -127,6 +127,28 @@ $('routineDaysBtn').onclick=()=>{const picker=$('routineDayPicker');picker.hidde
 $('routineAlarm').onchange=routineSync;
 $('routineFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{const f=b.dataset.filter;routineState.filters.has(f)?routineState.filters.delete(f):routineState.filters.add(f);routineSync()});
 $('routineForm').onsubmit=e=>{e.preventDefault();const title=$('routineName').value.trim();if(!title||!routineState.days.size){$('routineError').textContent=!title?'루틴 이름을 입력해 주세요.':'반복 요일을 하나 이상 선택해 주세요.';$('routineError').hidden=false;return}const when=$('routineWhen').value.trim();const match=when.match(/^([01]?\d|2[0-3]):([0-5]\d)$/);const time=match?match[1].padStart(2,'0')+':'+match[2]:'99:99';data.items.push({id:uid(),type:'habit',title,emoji:routineState.emoji,alarm:$('routineAlarm').checked,when,time,repeat:routineState.days.size===7?'daily':'weekly',days:[...routineState.days],day:[...routineState.days][0],filters:[...routineState.filters],startDate:$('routineStart').value||today(),private:$('routinePrivate').checked,checks:[]});save();$('routineDialog').close()};
+// Daily-record sections are available as individual routine entries; add once without altering existing routines.
+const dailyRecordRoutinePresets=[
+ ['일일 기록 · 아침 (05:00~08:30)','05:00','🌅'],
+ ['일일 기록 · 오전 (08:30~13:00)','08:30','☀️'],
+ ['일일 기록 · 오후 (14:00~17:30)','14:00','🌤️'],
+ ['일일 기록 · 저녁 (18:00~22:00)','18:00','🌙'],
+ ['일일 기록 · 식단','13:00','🥗'],
+ ['일일 기록 · 수면','07:00','🛌'],
+ ['일일 기록 · 몸','07:10','💪'],
+ ['일일 기록 · 기분','21:00','💭'],
+ ['일일 기록 · 운동','20:00','🏃']
+];
+if(!localStorage.getItem('moyo-daily-record-routine-presets-v1')){
+ let added=false;
+ dailyRecordRoutinePresets.forEach(([title,time,emoji])=>{
+  if(data.items.some(x=>x.type==='habit'&&x.title===title))return;
+  data.items.push({id:uid(),type:'habit',title,emoji,alarm:false,when:time,time,repeat:'daily',days:[0,1,2,3,4,5,6],startDate:today(),private:true,checks:[]});
+  added=true
+ });
+ localStorage.setItem('moyo-daily-record-routine-presets-v1','1');
+ if(added)save()
+}
 const routineOriginalDue=due;due=function(x,date){if(x.startDate&&date<x.startDate)return false;if(Array.isArray(x.days)&&x.days.length)return x.days.includes(new Date(date+'T12:00:00').getDay());return routineOriginalDue(x,date)};
 const routineOriginalRenderHabits=renderHabits;renderHabits=function(){routineOriginalRenderHabits();$('habitList').querySelectorAll('.entry').forEach((row,i)=>{const x=data.items.filter(v=>v.type==='habit').sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'))[i];if(!x)return;if(x.emoji){const badge=document.createElement('span');badge.textContent=x.emoji;row.prepend(badge)}if(x.when&&x.time==='99:99'){const note=document.createElement('span');note.className='muted';note.textContent=x.when;row.append(note)}})};
 
