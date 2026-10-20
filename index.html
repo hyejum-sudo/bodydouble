@@ -592,7 +592,7 @@ function renderCalendarWellness(){
  const moodTriple=(label,prefix,placeholder)=>{const row=document.createElement('div');row.className='calendar-mood-triple';mood.append(row);for(let n=1;n<=3;n++)field(row,prefix+n,label+' '+n,'text',{placeholder:placeholder})};
  moodTriple('칭찬','moodPraise','작은 시도도 좋아');
  moodTriple('감사','moodGratitude','사소한 것도 괜찮아');
- moodTriple('그럼에도 불구하고 할 수 있는 활동','moodDespite','아주 작은 행동');
+ moodTriple('그럼에도 불구하고 활동','moodDespite','아주 작은 행동');
 
 
  const exercise=section('exercise','운동');
