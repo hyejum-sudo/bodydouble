@@ -385,7 +385,7 @@ render();showTime();
 .unified-item span{flex:1;white-space:pre-wrap;overflow-wrap:anywhere}
 .unified-item button{padding:5px 8px}
 @media(max-width:650px){#matrix #quadrants{grid-template-columns:1fr!important}.unified-day{min-height:72px;padding:3px}.unified-chip{font-size:9px}}
-</style><script>
+</style><dialog id="taskFocusDialog" class="task-focus-dialog"><div class="task-focus-body"><div class="muted">집중 모드</div><h2 id="taskFocusTitle"></h2><div id="taskFocusClock">00:00:00</div><p id="taskFocusExpected"></p><button class="primary" id="taskFocusFinish">종료 · 실제 소요시간 기록</button></div></dialog><script>
 (function(){
 'use strict';
 const key='moyo-dashboard-v1',id=x=>document.getElementById(x),pad=n=>String(n).padStart(2,'0'),fmt=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),today=()=>fmt(new Date());
@@ -421,7 +421,7 @@ function paintAll(){matrix();calendar()}
 function setup(){document.querySelectorAll('nav [data-tab]').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();document.querySelectorAll('nav [data-tab]').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('main>section').forEach(section=>section.hidden=section.id!==btn.dataset.tab);if(btn.dataset.tab==='matrix')matrix();if(btn.dataset.tab==='calendar')calendar()},true));id('unifiedPrev').onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);calendar()};id('unifiedNext').onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);calendar()};id('unifiedToday').onclick=()=>{chosen=today();month=new Date();calendar()};id('unifiedDate').onchange=e=>{if(e.target.value){chosen=e.target.value;month=new Date(chosen+'T12:00:00');calendar()}};document.querySelectorAll('[data-show]').forEach(x=>x.onchange=()=>{visible=new Set([...document.querySelectorAll('[data-show]:checked')].map(y=>y.dataset.show));calendar()});const save=()=>{const title=id('unifiedText').value.trim(),date=id('unifiedDate').value||chosen,types=[...document.querySelectorAll('#unifiedTypes input:checked')].map(x=>x.value);if(!title||!types.length)return;chosen=date;month=new Date(date+'T12:00:00');addItem(types,title,date);id('unifiedText').value='';id('unifiedText').focus()};id('unifiedSave').onclick=save;id('unifiedText').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();save()}};const matrixTab=document.querySelector('[data-tab="matrix"]');if(matrixTab)matrixTab.click();paintAll()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
-</script><dialog id="taskFocusDialog" class="task-focus-dialog"><div class="task-focus-body"><div class="muted">집중 모드</div><h2 id="taskFocusTitle"></h2><div id="taskFocusClock">00:00:00</div><p id="taskFocusExpected"></p><button class="primary" id="taskFocusFinish">종료 · 실제 소요시간 기록</button></div></dialog><style>
+</script><style>
 #matrix .focus-task-row{position:relative;display:flex!important;flex-wrap:nowrap!important;gap:4px!important;align-items:center;overflow:visible!important;min-width:0;white-space:nowrap;padding:4px 0}
 #matrix .focus-task-row .focus-task-name{min-width:0!important;flex:1 1 0!important;width:0!important;font-size:11px!important;padding:4px 2px!important;overflow:hidden;text-overflow:ellipsis}
 #matrix .focus-task-row .focus-task-minutes{width:43px!important;min-width:43px!important;flex:0 0 43px!important;padding:4px 2px!important;font-size:11px!important;text-align:center}
