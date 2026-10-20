@@ -607,7 +607,7 @@ function renderCalendarWellness(){
 }
 function renderCalendarTimeRecords(){
  const root=id('calendarDayTimeRecordGrid');if(!root)return;root.replaceChildren();
- const periods=[{name:'새벽·아침',start:5,end:10},{name:'오전·점심',start:10,end:15},{name:'오후',start:15,end:20},{name:'저녁·밤',start:20,end:24}];
+ const periods=[{name:'아침',start:'05:00',end:'08:30'},{name:'오전',start:'08:30',end:'13:00'},{name:'오후',start:'14:00',end:'17:30'},{name:'저녁',start:'18:00',end:'22:00'}];
  let saved={};try{saved=JSON.parse(localStorage.getItem('moyo-day-time-notes-v1')||'{}')||{}}catch(e){}
  const selectedDate=chosen;
  let ratings={};try{ratings=JSON.parse(localStorage.getItem('moyo-day-time-ratings-v1')||'{}')||{}}catch(e){}
@@ -618,7 +618,7 @@ function renderCalendarTimeRecords(){
   const card=document.createElement('div');card.className='calendar-day-record-period';
   const head=document.createElement('div');head.className='calendar-day-record-head';
   const name=document.createElement('strong');name.textContent=period.name;
-  const range=document.createElement('span');range.textContent=String(period.start).padStart(2,'0')+':00–'+String(period.end).padStart(2,'0')+':00';
+  const range=document.createElement('span');range.textContent=period.start+'–'+period.end;
   const rating=document.createElement('span');rating.className='calendar-period-stars';rating.setAttribute('role','group');rating.setAttribute('aria-label',period.name+' 별점');
   const ratingKey=selectedDate+'-'+index;
   const refreshStars=()=>rating.querySelectorAll('button').forEach((btn,i)=>{btn.classList.toggle('filled',i<Number(ratings[ratingKey]||0));btn.setAttribute('aria-pressed',String(i+1===Number(ratings[ratingKey]||0)))});
