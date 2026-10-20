@@ -484,7 +484,9 @@ function renderCalendarWellness(){
  const day=chosen,storeKey='moyo-calendar-wellness-v1';let all={};try{all=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(e){}
  const data=all[day]||{};
  const save=(key,value)=>{let current={};try{current=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(e){}current[day]={...(current[day]||{}),[key]:value};try{localStorage.setItem(storeKey,JSON.stringify(current))}catch(e){console.warn('일일 기록 저장 실패',e)}};
- const section=(key,title)=>{const d=document.createElement('details');d.className='calendar-right-accordion calendar-health-section';d.dataset.section=key;d.open=calendarRightOpenSections.has(key);const summary=document.createElement('summary');summary.textContent=title;d.append(summary);const body=document.createElement('div');body.className='calendar-health-body';d.append(body);d.addEventListener('toggle',()=>{if(d.open)calendarRightOpenSections.add(key);else calendarRightOpenSections.delete(key)});root.append(d);return body};
+ const section=(key,title)=>{const d=document.createElement('details');d.className='calendar-right-accordion calendar-health-section';d.dataset.section=key;d.open=calendarRightOpenSections.has(key);const summary=document.createElement('summary');const label=document.createElement('span');label.textContent=title;const score=document.createElement('span');score.className='calendar-accordion-score';score.dataset.scoreFor=key;summary.append(label,score);d.append(summary);const body=document.createElement('div');body.className='calendar-health-body';d.append(body);d.addEventListener('toggle',()=>{if(d.open)calendarRightOpenSections.add(key);else calendarRightOpenSections.delete(key)});root.append(d);return body};
+ const setHeaderScore=(key,value)=>{const el=root.querySelector('[data-score-for="'+key+'"]');if(el)el.textContent=value||''};
+ const getHeaderScore=(key)=>{const v=data[key];return v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null};
  const field=(parent,key,label,kind='text',opts={})=>{
   const wrap=document.createElement('label');wrap.className='calendar-health-field';const caption=document.createElement('span');caption.textContent=label;wrap.append(caption);
   let el;if(kind==='select'){el=document.createElement('select');(opts.options||[]).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'선택';el.append(o)})}
@@ -509,7 +511,7 @@ function renderCalendarWellness(){
    output.textContent=skipped?'안 먹음':mean===null?'—':mean.toFixed(1);
    if(!skipped&&mean!==null)totals.push(mean)
   });
-  summary.textContent=totals.length?'하루 식단 '+(totals.reduce((x,y)=>x+y,0)/totals.length*10).toFixed(1)+' / 100점':'하루 식단 — / 100점'
+  summary.textContent=totals.length?'하루 식단 '+(totals.reduce((x,y)=>x+y,0)/totals.length*10).toFixed(1)+' / 100점':'하루 식단 — / 100점';setHeaderScore('food',totals.length?(totals.reduce((x,y)=>x+y,0)/totals.length*10).toFixed(1)+' / 100점':'—')
  };
  ['아침','점심','간식','저녁'].forEach((meal,i)=>{
   const row=document.createElement('div');row.className='calendar-food-compact-row';
@@ -525,11 +527,12 @@ function renderCalendarWellness(){
  const sleep=section('sleep','수면');
  const sleepHint=document.createElement('p');sleepHint.className='calendar-food-hint';sleepHint.textContent='별 5개 · 0.5점 단위 · 시간/위생/퀄리티 각각 평가';sleep.append(sleepHint);
  const sleepScoreFields=document.createElement('div');sleepScoreFields.className='calendar-sleep-score-fields';sleep.append(sleepScoreFields);
+ const updateSleepHeader=()=>{const vals=['sleepTimeScore','sleepHygieneScore','sleepQualityScore'].map(k=>getHeaderScore(k)).filter(v=>v!==null);setHeaderScore('sleep',vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1)+' / 5점':'—')};
  const starField=(key,label,legacyKey)=>{
   const row=document.createElement('div');row.className='calendar-sleep-score-row';const title=document.createElement('span');title.textContent=label;row.append(title);
   const stars=document.createElement('div');stars.className='calendar-sleep-stars';stars.setAttribute('role','group');stars.setAttribute('aria-label',label+' 별점');
   let current=Number(data[key])||0;const score=document.createElement('output');
-  const paint=()=>{stars.querySelectorAll('button').forEach((btn,i)=>{const n=(i+1)*0.5;btn.classList.toggle('filled',n<=current);btn.setAttribute('aria-pressed',String(n===current))});score.textContent=current.toFixed(1)+' / 5'};
+  const paint=()=>{stars.querySelectorAll('button').forEach((btn,i)=>{const n=(i+1)*0.5;btn.classList.toggle('filled',n<=current);btn.setAttribute('aria-pressed',String(n===current))});score.textContent=current.toFixed(1)+' / 5';updateSleepHeader()};
   for(let n=1;n<=10;n++){const btn=document.createElement('button');btn.type='button';btn.className='calendar-sleep-halfstar';btn.textContent='★';btn.title=(n/2).toFixed(1)+'점';btn.setAttribute('aria-label',(n/2).toFixed(1)+'점');btn.onclick=()=>{current=current===n/2?0:n/2;data[key]=String(current);save(key,String(current));paint()};stars.append(btn)}
   row.append(stars,score);sleepScoreFields.append(row);paint()
  };
@@ -542,13 +545,14 @@ function renderCalendarWellness(){
  const body=section('body','몸');const bodyFields=document.createElement('div');bodyFields.className='calendar-health-two';body.append(bodyFields);
  field(bodyFields,'painArea','통증 부위','text',{placeholder:'예: 왼쪽 어깨'});
  const painWrap=document.createElement('div');painWrap.className='calendar-health-field';const painTitle=document.createElement('span');painTitle.textContent='통증 정도 (0~10)';painWrap.append(painTitle);
- const pain=document.createElement('input');pain.type='range';pain.min='0';pain.max='10';pain.step='1';pain.value=data.painLevel??'0';const painOutput=document.createElement('output');painOutput.textContent=pain.value+' / 10';pain.oninput=()=>{painOutput.textContent=pain.value+' / 10';save('painLevel',pain.value)};painWrap.append(pain,painOutput);bodyFields.append(painWrap);
+ const pain=document.createElement('input');pain.type='range';pain.min='0';pain.max='10';pain.step='1';pain.value=data.painLevel??'0';const painOutput=document.createElement('output');painOutput.textContent=pain.value+' / 10';pain.oninput=()=>{painOutput.textContent=pain.value+' / 10';data.painLevel=pain.value;save('painLevel',pain.value);setHeaderScore('body',pain.value+' / 10')};setHeaderScore('body',data.painLevel!==undefined?data.painLevel+' / 10':'—');painWrap.append(pain,painOutput);bodyFields.append(painWrap);
  field(body,'bodyState','몸 상태 메모','textarea',{placeholder:'피로, 컨디션 등'});
  const mood=section('mood','기분');
  const moodIntro=document.createElement('p');moodIntro.className='calendar-mood-hint';moodIntro.textContent='무드 선택 → 강도 → 원인 → 생각과 거리두기 → 작은 행동';mood.append(moodIntro);
+ const updateMoodHeader=()=>{const v=getHeaderScore('moodIntensity');setHeaderScore('mood',v===null?'—':v+' / 10')};
  const moodTop=document.createElement('div');moodTop.className='calendar-mood-top';mood.append(moodTop);
  const moodSelector=document.createElement('div');moodSelector.className='calendar-mood-picker';moodTop.append(moodSelector);
- const intensity=field(moodTop,'moodIntensity','강도 (0~10)','number',{min:0,max:10,step:1,placeholder:'0~10'});
+ const intensity=field(moodTop,'moodIntensity','강도 (0~10)','number',{min:0,max:10,step:1,placeholder:'0~10'});intensity.addEventListener('input',()=>{data.moodIntensity=intensity.value;updateMoodHeader()});updateMoodHeader();
  const moodDefaults=[['😊','기쁨'],['😌','평온'],['🥰','사랑'],['🤩','신남'],['😐','무덤덤'],['😔','슬픔'],['😟','불안'],['😤','짜증'],['😠','화남'],['😫','지침'],['🥺','서운함'],['😵‍💫','혼란']];
  const customKey='moyo-custom-moods-v1';let customMoods=[];try{const v=JSON.parse(localStorage.getItem(customKey)||'[]');if(Array.isArray(v))customMoods=v.filter(x=>Array.isArray(x)&&x.length===2&&typeof x[0]==='string'&&typeof x[1]==='string')}catch(e){}
  const moodChoices=document.createElement('div');moodChoices.className='calendar-mood-choices';moodSelector.append(moodChoices);
@@ -579,7 +583,7 @@ function renderCalendarWellness(){
  field(exerciseRow,'exerciseArea','부위','text',{placeholder:'하체/코어'});
  field(exerciseRow,'exerciseIntensity','강도','select',{options:['','가벼움','보통','높음','매우 높음']});
  field(exercise,'exerciseMemo','교정 · 추가 메모','textarea',{rows:3,placeholder:'오늘 느낀 점 / 교정할 자세·부위 / 다음 운동에서 추가할 것'});
- const updateExercise=()=>{exerciseRow.classList.toggle('is-exercise-skipped',exerciseChoice.value==='X')};exerciseChoice.addEventListener('change',updateExercise);updateExercise()
+ const updateExercise=()=>{exerciseRow.classList.toggle('is-exercise-skipped',exerciseChoice.value==='X');setHeaderScore('exercise',exerciseChoice.value==='O'?'O':exerciseChoice.value==='X'?'X':'—')};exerciseChoice.addEventListener('change',updateExercise);updateExercise()
 }
 function renderCalendarTimeRecords(){
  const root=id('calendarDayTimeRecordGrid');if(!root)return;root.replaceChildren();
@@ -1333,4 +1337,11 @@ body>main{padding-top:6px!important}
 #calendar .calendar-food-compact-row select{font-size:9px!important}
 #calendar .calendar-food-compact-head span{font-size:9px!important;overflow-wrap:anywhere}
 @media(max-width:700px){#calendar .calendar-food-compact-row{grid-template-columns:42px 32px minmax(55px,1fr) 54px repeat(4,minmax(34px,1fr)) 40px!important;gap:2px!important}}
+</style><style id="calendar-accordion-header-scores">
+#calendar .calendar-health-section>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;list-style:none!important}
+#calendar .calendar-health-section>summary::-webkit-details-marker{display:none}
+#calendar .calendar-health-section>summary::before{content:'▸';font-size:11px;color:#77808b;flex:none}
+#calendar .calendar-health-section[open]>summary::before{content:'▾'}
+#calendar .calendar-health-section>summary>span:first-child{flex:1}
+#calendar .calendar-accordion-score{font-weight:700;font-size:12px;color:#2c6554;white-space:nowrap;text-align:right;margin-left:auto}
 </style></body></html>
