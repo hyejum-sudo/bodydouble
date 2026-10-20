@@ -478,4 +478,62 @@ body{font-size:90%}button,input,textarea,select{font-size:.9em}
 #calendar .diary-period-entry{align-items:center}
 #calendar .diary-period-entry .diary-entry-time{flex:0 0 105px}
 @media(max-width:650px){#calendar .diary-period-entry{flex-wrap:wrap}}
-</style></body></html>
+</style><style id="compact-ui-2026">
+:root{font-size:12px!important}
+body{font-size:12px!important;line-height:1.35}
+header{padding:9px max(12px,calc((100vw - 1280px)/2))!important}
+header h1{font-size:15px!important;line-height:1.25!important}
+header p{font-size:10px!important;margin:2px 0!important}
+main{max-width:1280px!important;padding:9px 12px!important}
+nav{gap:4px!important;margin-bottom:8px!important}
+nav button{padding:6px 10px!important;font-size:11px!important;border-radius:5px!important;cursor:grab}
+nav button:active{cursor:grabbing}
+nav button.tab-dragging{opacity:.35}
+nav button.tab-drop-target{outline:2px solid #44886c;outline-offset:1px}
+.panel{padding:10px!important;margin:7px 0!important;border-radius:7px!important}
+h2{font-size:14px!important;margin:3px 0 7px!important}
+h3{font-size:12px!important;margin:3px 0 5px!important}
+h4{font-size:11px!important}
+p{margin:4px 0!important}
+button,input,select,textarea{font-size:11px!important}
+button{padding:6px 9px!important;border-radius:5px!important}
+input,select,textarea{padding:6px!important;border-radius:4px!important}
+textarea{min-height:55px}
+.formrow{gap:5px!important}
+.muted{font-size:10px!important}
+#matrix .quad{padding:9px!important;min-height:210px!important;max-height:340px!important;border-radius:6px!important}
+#matrix .quad h3{font-size:11px!important}
+#matrix .matrix-direct{padding:5px!important;margin:5px 0!important;font-size:11px!important}
+#matrix .focus-task-row{padding:2px 0!important}
+#matrix .focus-task-row .focus-task-name{font-size:10px!important}
+#calendar .unified-day{min-height:75px!important;padding:4px!important}
+#calendar .unified-chip{font-size:9px!important;margin-top:2px!important}
+#calendar .unified-weekdays span{padding:5px 0!important}
+#calendar .unified-filters{gap:9px!important;margin:6px 0!important;font-size:11px!important}
+#calendar .diary-period{padding:8px!important;min-height:125px!important}
+#calendar .diary-period h3{font-size:11px!important}
+#calendar .diary-period textarea{min-height:55px!important}
+#calendar .unified-grid.range-view .unified-day{min-height:190px!important}
+@media(max-width:650px){header{padding:8px 12px!important}main{padding:7px!important}#calendar .unified-grid.range-view .unified-day{min-height:120px!important}}
+</style>
+<script>
+(function(){
+'use strict';
+const nav=document.querySelector('main nav[aria-label="메뉴"]');
+if(!nav)return;
+const storageKey='moyo-tab-order-v1';
+const tabs=()=>Array.from(nav.querySelectorAll('button[data-tab]'));
+function persist(){try{localStorage.setItem(storageKey,JSON.stringify(tabs().map(b=>b.dataset.tab)))}catch(e){console.warn('Tab order not saved',e)}}
+try{const saved=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(saved)){saved.forEach(name=>{const b=tabs().find(el=>el.dataset.tab===name);if(b)nav.appendChild(b)})}}catch(e){}
+let dragging=null;
+tabs().forEach(btn=>{
+btn.draggable=true;
+btn.title=(btn.title?btn.title+' · ':'')+'드래그하여 탭 순서 변경';
+btn.addEventListener('dragstart',e=>{dragging=btn;btn.classList.add('tab-dragging');if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',btn.dataset.tab)}});
+btn.addEventListener('dragover',e=>{if(!dragging||dragging===btn)return;e.preventDefault();btn.classList.add('tab-drop-target');if(e.dataTransfer)e.dataTransfer.dropEffect='move'});
+btn.addEventListener('dragleave',()=>btn.classList.remove('tab-drop-target'));
+btn.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();btn.classList.remove('tab-drop-target');if(!dragging||dragging===btn)return;const bounds=btn.getBoundingClientRect();nav.insertBefore(dragging,e.clientX<bounds.left+bounds.width/2?btn:btn.nextSibling);persist()});
+btn.addEventListener('dragend',()=>{dragging=null;tabs().forEach(x=>x.classList.remove('tab-dragging','tab-drop-target'))});
+});
+})();
+</script></body></html>
