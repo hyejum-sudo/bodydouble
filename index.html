@@ -632,4 +632,28 @@ btn.addEventListener('dragend',()=>{dragging=null;tabs().forEach(x=>x.classList.
 #matrix .matrix-subtask-row>button{flex:0 0 20px;width:20px;padding:1px}
 #matrix .matrix-subtask-row.is-complete{background:#e5e7e9}
 #matrix .subtask-add{align-self:flex-start;padding:2px 5px;font-size:11px;border:0;background:transparent}
-</style></body></html>
+</style><style id="unified-icon-buttons">
+/* Compact icon-only actions: equal rounded-square hit targets across all views. */
+button.ui-icon-square{
+  box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 26px!important;width:26px!important;min-width:26px!important;max-width:26px!important;
+  height:26px!important;min-height:26px!important;max-height:26px!important;
+  padding:0!important;margin:0!important;border:1px solid #d9e3e3!important;
+  border-radius:8px!important;background:#f0f5f4!important;color:#365c60!important;
+  font-size:14px!important;line-height:1!important;vertical-align:middle!important;
+  box-shadow:none!important;visibility:visible!important;opacity:1!important;
+}
+button.ui-icon-square:hover{background:#dcebe7!important;border-color:#a6c6c0!important}
+button.ui-icon-square:active{background:#cce1da!important}
+button.ui-icon-square:disabled{opacity:.4!important;cursor:default!important}
+button.ui-icon-square:focus-visible{outline:2px solid #d69b50!important;outline-offset:1px!important}
+#matrix .matrix-task-block .subtask-toggle,#matrix .matrix-subtask-row>button{flex:0 0 26px!important;width:26px!important;min-width:26px!important}
+#matrix .matrix-task-block{min-width:390px}
+#matrix .matrix-task-block .focus-task-row{min-width:390px!important}
+</style>
+<script id="icon-square-normalizer">
+(()=>{const icons=new Set(['▶','■','⏸','▸','▾','×','✕','✖','✎','✏','✓','✔','＋','+','−','-','‹','›','«','»','◀','⏹','⏯','▦','🗑','⚙','⋮','☰','↻','⟲','⟳','←','→','↑','↓','📅','🗓','⏱','⏰']);
+function sync(root){const buttons=[];if(root.nodeType===1&&root.matches?.('button'))buttons.push(root);if(root.querySelectorAll)buttons.push(...root.querySelectorAll('button'));for(const b of buttons){if(b.closest('[hidden]'))continue;const label=(b.textContent||'').trim();const onlyIcon=icons.has(label)||!!(label&&label.length<=3&&/^[\\p{Extended_Pictographic}\\uFE0F\\u200D]+$/u.test(label));b.classList.toggle('ui-icon-square',onlyIcon);}}
+sync(document);let scheduled=false;new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;sync(document)})}).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+</script></body></html>
