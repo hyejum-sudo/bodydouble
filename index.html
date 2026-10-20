@@ -543,7 +543,34 @@ function renderCalendarWellness(){
  const painWrap=document.createElement('div');painWrap.className='calendar-health-field';const painTitle=document.createElement('span');painTitle.textContent='통증 정도 (0~10)';painWrap.append(painTitle);
  const pain=document.createElement('input');pain.type='range';pain.min='0';pain.max='10';pain.step='1';pain.value=data.painLevel??'0';const painOutput=document.createElement('output');painOutput.textContent=pain.value+' / 10';pain.oninput=()=>{painOutput.textContent=pain.value+' / 10';save('painLevel',pain.value)};painWrap.append(pain,painOutput);bodyFields.append(painWrap);
  field(body,'bodyState','몸 상태 메모','textarea',{placeholder:'피로, 컨디션 등'});
- const mood=section('mood','기분');field(mood,'mood','기분','select',{options:['','매우 나쁨','나쁨','보통','좋음','매우 좋음']});field(mood,'moodCause','기분 원인','textarea',{placeholder:'기분에 영향을 준 일'});
+ const mood=section('mood','기분');
+ const moodIntro=document.createElement('p');moodIntro.className='calendar-mood-hint';moodIntro.textContent='무드 선택 → 강도 → 원인 → 생각과 거리두기 → 작은 행동';mood.append(moodIntro);
+ const moodTop=document.createElement('div');moodTop.className='calendar-mood-top';mood.append(moodTop);
+ const moodSelector=document.createElement('div');moodSelector.className='calendar-mood-picker';moodTop.append(moodSelector);
+ const intensity=field(moodTop,'moodIntensity','강도 (0~10)','number',{min:0,max:10,step:1,placeholder:'0~10'});
+ const moodDefaults=[['😊','기쁨'],['😌','평온'],['🥰','사랑'],['🤩','신남'],['😐','무덤덤'],['😔','슬픔'],['😟','불안'],['😤','짜증'],['😠','화남'],['😫','지침'],['🥺','서운함'],['😵‍💫','혼란']];
+ const customKey='moyo-custom-moods-v1';let customMoods=[];try{const v=JSON.parse(localStorage.getItem(customKey)||'[]');if(Array.isArray(v))customMoods=v.filter(x=>Array.isArray(x)&&x.length===2&&typeof x[0]==='string'&&typeof x[1]==='string')}catch(e){}
+ const moodChoices=document.createElement('div');moodChoices.className='calendar-mood-choices';moodSelector.append(moodChoices);
+ const selectedMood=document.createElement('span');selectedMood.className='calendar-mood-selected';moodSelector.append(selectedMood);
+ let selected=data.moodChoice||'';
+ const renderMoodChoices=()=>{moodChoices.replaceChildren();[...moodDefaults,...customMoods].forEach(([emoji,label])=>{const value=emoji+' '+label;const button=document.createElement('button');button.type='button';button.className='calendar-mood-choice';button.title=label;button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(selected===value));button.textContent=emoji;button.onclick=()=>{selected=selected===value?'':value;data.moodChoice=selected;save('moodChoice',selected);renderMoodChoices()};moodChoices.append(button)});selectedMood.textContent=selected||'무드를 골라줘'};
+ renderMoodChoices();
+ const addMood=document.createElement('details');addMood.className='calendar-mood-add';const addTitle=document.createElement('summary');addTitle.textContent='＋ 무드 추가';addMood.append(addTitle);
+ const addRow=document.createElement('div');addRow.className='calendar-mood-add-row';const emojiInput=document.createElement('input');emojiInput.type='text';emojiInput.maxLength=8;emojiInput.placeholder='🙂';emojiInput.setAttribute('aria-label','추가할 무드 그림');const nameInput=document.createElement('input');nameInput.type='text';nameInput.maxLength=16;nameInput.placeholder='무드 이름';nameInput.setAttribute('aria-label','추가할 무드 이름');const addButton=document.createElement('button');addButton.type='button';addButton.textContent='추가';addButton.onclick=()=>{const emoji=emojiInput.value.trim(),name=nameInput.value.trim();if(!emoji||!name)return;const value=emoji+' '+name;if(![...moodDefaults,...customMoods].some(v=>v[0]+' '+v[1]===value)){customMoods.push([emoji,name]);try{localStorage.setItem(customKey,JSON.stringify(customMoods))}catch(e){console.warn(e)}}selected=value;data.moodChoice=value;save('moodChoice',value);renderMoodChoices();emojiInput.value='';nameInput.value='';addMood.open=false};addRow.append(emojiInput,nameInput,addButton);addMood.append(addRow);mood.append(addMood);
+ field(mood,'moodCause','상황 · 원인','textarea',{rows:2,placeholder:'무슨 일이 있었지? 사실만 짧게'});
+ const cbt=document.createElement('details');cbt.className='calendar-mood-method';cbt.open=true;const cbtSummary=document.createElement('summary');cbtSummary.textContent='CBT · 생각 점검';cbt.append(cbtSummary);
+ const cbtFields=document.createElement('div');cbtFields.className='calendar-mood-method-fields';cbt.append(cbtFields);
+ field(cbtFields,'moodAutomaticThought','자동적 생각','textarea',{rows:2,placeholder:'그 순간 머릿속에 떠오른 말'});
+ field(cbtFields,'moodEvidence','다른 관점 · 균형 잡힌 생각','textarea',{rows:2,placeholder:'사실과 해석을 나누면? 다른 설명은?'});
+ mood.append(cbt);
+ const act=document.createElement('details');act.className='calendar-mood-method';act.open=true;const actSummary=document.createElement('summary');actSummary.textContent='ACT · 수용과 행동';act.append(actSummary);
+ const actFields=document.createElement('div');actFields.className='calendar-mood-method-fields';act.append(actFields);
+ field(actFields,'moodAcceptance','수용 · 거리두기','textarea',{rows:2,placeholder:'나는 지금 ___라는 생각/감정을 알아차린다'});
+ field(actFields,'moodValueAction','가치에 맞는 작은 행동','textarea',{rows:2,placeholder:'이 감정을 안고도 할 수 있는 2분 행동'});
+ mood.append(act);
+ field(mood,'moodCoping','대처 · 결과','textarea',{rows:2,placeholder:'해본 대처와 이후 변화'});
+ if(data.mood&&!data.moodChoice){const previous=document.createElement('p');previous.className='calendar-mood-hint';previous.textContent='이전 기분 기록: '+data.mood;mood.append(previous)}
+
  const exercise=section('exercise','운동');
  const exerciseChoice=field(exercise,'exerciseDone','운동 여부','select',{options:['','O','X']});
  const exerciseDetails=document.createElement('div');exerciseDetails.className='calendar-health-two';exercise.append(exerciseDetails);
@@ -1277,4 +1304,20 @@ body>main{padding-top:6px!important}
 #calendar .time-event.task .calendar-task-clock{min-width:0;overflow:hidden;text-overflow:ellipsis}
 #calendar .time-event.task .calendar-time-task-actions{grid-column:4!important;justify-self:end!important;margin-left:0!important}
 @media(max-width:700px){#calendar .calendar-food-compact-row{grid-template-columns:44px 36px minmax(65px,1fr) repeat(4,38px) 42px!important}}
+</style><style id="calendar-mood-cbt-act">
+#calendar .calendar-mood-hint{font-size:10px;color:#697586;margin:0}
+#calendar .calendar-mood-top{display:grid;grid-template-columns:minmax(0,1fr) 80px;gap:8px;align-items:start}
+#calendar .calendar-mood-picker{min-width:0}
+#calendar .calendar-mood-choices{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+#calendar .calendar-mood-choice{border:1px solid #e2e6eb!important;background:#f9fafb!important;border-radius:9px!important;font-size:20px!important;line-height:1!important;padding:7px 0!important;cursor:pointer}
+#calendar .calendar-mood-choice[aria-pressed=true]{border-color:#6a9a8d!important;background:#e2f2ec!important;box-shadow:0 0 0 1px #6a9a8d}
+#calendar .calendar-mood-selected{display:block;font-size:11px;font-weight:600;margin-top:5px}
+#calendar .calendar-mood-add{font-size:11px}
+#calendar .calendar-mood-add summary,#calendar .calendar-mood-method summary{cursor:pointer;font-weight:650}
+#calendar .calendar-mood-add-row{display:flex;gap:5px;margin-top:6px}
+#calendar .calendar-mood-add-row input{min-width:0;width:40%;font-size:11px;padding:5px;border:1px solid #dfe3e9;border-radius:5px}
+#calendar .calendar-mood-add-row button{font-size:11px;padding:4px 8px}
+#calendar .calendar-mood-method{border:1px solid #e6e8ec;border-radius:7px;padding:8px;font-size:11px}
+#calendar .calendar-mood-method-fields{display:flex;flex-direction:column;gap:7px;padding-top:7px}
+#calendar .calendar-mood-top .calendar-health-field{align-self:start}
 </style></body></html>
