@@ -580,8 +580,8 @@ function renderCalendarWellness(){
  buttonChoice(exerciseRow,'exerciseDone','여부',['O','X']);
 
  const exerciseTypeField=field(exerciseRow,'exerciseType','종류','text',{placeholder:'요가/헬스'});
+ const exerciseDurationField=field(exerciseRow,'exerciseDuration','시간 (분)','number',{min:0,max:1440,step:1,placeholder:'예: 60'});
  const exerciseAreaField=field(exerciseRow,'exerciseArea','부위','text',{placeholder:'하체/코어'});
- const exerciseDurationField=field(exerciseRow,'exerciseDuration','운동시간 (분)','number',{min:0,max:1440,step:1,placeholder:'분'});
  const exerciseIntensityField=field(exerciseRow,'exerciseIntensityScore','강도 (0~10)','number',{min:0,max:10,step:1,placeholder:'0~10'});
  const alternativeActivity=field(exercise,'exerciseAlternative','운동 대신한 활동','text',{placeholder:'휴식, 산책, 정리, 독서 등'});
  const exerciseMoodsRow=document.createElement('div');exerciseMoodsRow.className='calendar-exercise-feelings';exercise.append(exerciseMoodsRow);const beforeMoodSlot=document.createElement('div');beforeMoodSlot.className='calendar-exercise-mood-slot';const afterMoodSlot=document.createElement('div');afterMoodSlot.className='calendar-exercise-mood-slot';exerciseMoodsRow.append(beforeMoodSlot,afterMoodSlot);
