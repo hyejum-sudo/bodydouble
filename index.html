@@ -494,16 +494,38 @@ function renderCalendarWellness(){
   el.value=data[key]??'';el.addEventListener('input',()=>save(key,el.value));wrap.append(el);parent.append(wrap);return el
  };
  const food=section('food','식단');
- const foodHead=document.createElement('div');foodHead.className='calendar-food-grid calendar-food-heading';
- ['구분','시간','음식·양','탄·단·지','영양','첨가물'].forEach(t=>{const span=document.createElement('span');span.textContent=t;foodHead.append(span)});food.append(foodHead);
+ const intro=document.createElement('p');intro.className='calendar-food-hint';intro.textContent='각 항목 0~10점 · 높을수록 좋음 · 입력한 식사만 평균';food.append(intro);
+ const summary=document.createElement('div');summary.className='calendar-food-summary';food.append(summary);
+ const foodHead=document.createElement('div');foodHead.className='calendar-food-grid calendar-food-scoring-grid calendar-food-heading';
+ ['식사','시간','음식','양','탄단지','영양','첨가물','식사점수'].forEach(t=>{const span=document.createElement('span');span.textContent=t;foodHead.append(span)});food.append(foodHead);
+ const scoreKeys=['amountScore','macroScore','nutritionScore','additivesScore'];
+ const mealOutputs=[];
+ const getScore=(mealIndex,key)=>{const value=data['food_'+mealIndex+'_'+key];return value!==undefined&&value!==''&&Number.isFinite(Number(value))?Math.max(0,Math.min(10,Number(value))):null};
+ const refresh=()=>{
+  const mealScores=[];
+  mealOutputs.forEach(({index,output})=>{
+   const scores=scoreKeys.map(key=>getScore(index,key)).filter(v=>v!==null);
+   if(scores.length){const average=scores.reduce((x,y)=>x+y,0)/scores.length;output.textContent=average.toFixed(1)+' / 10';mealScores.push(average)}
+   else output.textContent='—';
+  });
+  summary.textContent=mealScores.length?'하루 식단 점수  '+(mealScores.reduce((x,y)=>x+y,0)/mealScores.length*10).toFixed(1)+' / 100  ('+mealScores.length+'끼 평균)':'하루 식단 점수  — / 100';
+ };
  ['아침','점심','간식','저녁'].forEach((meal,i)=>{
-  const row=document.createElement('div');row.className='calendar-food-grid';
+  const row=document.createElement('div');row.className='calendar-food-grid calendar-food-scoring-grid';
   const title=document.createElement('strong');title.textContent=meal;row.append(title);
-  [['time','time'],['amount','text'],['macros','text'],['nutrition','text'],['additives','text']].forEach(([name,type])=>{
-   const key='food_'+i+'_'+name;const input=document.createElement('input');input.type=type;input.setAttribute('aria-label',meal+' '+({time:'시간',amount:'음식과 양',macros:'탄단지',nutrition:'영양',additives:'첨가물'}[name]));input.placeholder=({amount:'음식 / 양',macros:'탄/단/지',nutrition:'영양소',additives:'첨가물'}[name]||'');input.value=data[key]||'';input.oninput=()=>save(key,input.value);row.append(input)
-  });food.append(row)
+  const time=document.createElement('input');time.type='time';time.setAttribute('aria-label',meal+' 시간');time.value=data['food_'+i+'_time']||'';time.oninput=()=>save('food_'+i+'_time',time.value);row.append(time);
+  const foodName=document.createElement('input');foodName.type='text';foodName.placeholder='먹은 음식';foodName.setAttribute('aria-label',meal+' 음식');foodName.value=data['food_'+i+'_amount']||'';foodName.oninput=()=>save('food_'+i+'_amount',foodName.value);row.append(foodName);
+  scoreKeys.forEach((key,j)=>{
+   const select=document.createElement('select');select.setAttribute('aria-label',meal+' '+['양','탄단지','영양','첨가물'][j]+' 점수');const blank=document.createElement('option');blank.value='';blank.textContent='—';select.append(blank);
+   for(let n=0;n<=10;n++){const option=document.createElement('option');option.value=String(n);option.textContent=n+'점';select.append(option)}
+   select.value=data['food_'+i+'_'+key]??'';
+   select.onchange=()=>{data['food_'+i+'_'+key]=select.value;save('food_'+i+'_'+key,select.value);refresh()};row.append(select)
+  });
+  const output=document.createElement('strong');output.className='calendar-food-meal-score';row.append(output);mealOutputs.push({index:i,output});food.append(row)
  });
+ refresh();
  if(data.meals){field(food,'meals','이전 식단 메모','textarea',{rows:2})}
+ if(['macros','nutrition','additives'].some(k=>['0','1','2','3'].some(i=>data['food_'+i+'_'+k]))){const legacy=document.createElement('details');legacy.className='calendar-food-legacy';const label=document.createElement('summary');label.textContent='이전 식단 상세 기록';legacy.append(label);['아침','점심','간식','저녁'].forEach((meal,i)=>{const values=['macros','nutrition','additives'].map((key,j)=>['탄단지','영양','첨가물'][j]+': '+(data['food_'+i+'_'+key]||'')).filter(t=>!t.endsWith(': '));if(values.length){const p=document.createElement('p');p.textContent=meal+' · '+values.join(' / ');legacy.append(p)}});food.append(legacy)}
  const sleep=section('sleep','수면');const sleepFields=document.createElement('div');sleepFields.className='calendar-health-two';sleep.append(sleepFields);
  field(sleepFields,'sleepHours','수면 시간 (시간)','number',{min:0,max:24,step:0.5,placeholder:'예: 7.5'});
  field(sleepFields,'sleepQuality','수면 퀄리티','select',{options:['','매우 나쁨','나쁨','보통','좋음','매우 좋음']});
@@ -1208,4 +1230,12 @@ body>main{padding-top:6px!important}
 #calendar .time-event.task.quadrant-1{border-left:5px solid #6a9a8d!important}
 #calendar .time-event.task.quadrant-2{border-left:5px solid #e2b35e!important}
 #calendar .time-event.task.quadrant-3{border-left:5px solid #98a1b1!important}
+</style><style id="calendar-food-scoring">
+#calendar .calendar-food-scoring-grid{grid-template-columns:36px 74px minmax(105px,1.5fr) repeat(4,minmax(53px,1fr)) 70px!important;gap:4px!important}
+#calendar .calendar-food-scoring-grid select{width:100%;min-width:0;box-sizing:border-box;font-size:10px;padding:5px 1px;border:1px solid #dfe3e9;border-radius:4px;background:white}
+#calendar .calendar-food-hint{margin:0;color:#6b7280;font-size:11px}
+#calendar .calendar-food-summary{font-size:15px;font-weight:700;background:#f2f7f4;border:1px solid #d7e9df;border-radius:7px;padding:10px}
+#calendar .calendar-food-meal-score{font-size:11px;color:#24634d;white-space:nowrap}
+#calendar .calendar-food-legacy{font-size:11px;color:#6b7280}
+#calendar .calendar-food-legacy p{margin:4px 0}
 </style></body></html>
