@@ -597,7 +597,7 @@ function renderCalendarWellness(){
  exerciseMoodStars('exerciseMoodBefore','운동 전 기분');
  exerciseMoodStars('exerciseMoodAfter','운동 후 기분');
  const exerciseMemo=field(exercise,'exerciseMemo','교정 · 추가 메모','textarea',{rows:2,placeholder:'교정할 자세·부위 / 다음 운동에서 추가할 것'});exerciseMemo.classList.add('calendar-exercise-short-memo');
- const updateExercise=()=>{const skipped=data.exerciseDone==='X';exerciseRow.classList.toggle('is-exercise-skipped',skipped);alternativeActivity.parentElement.hidden=!skipped;[exerciseTypeField,exerciseAreaField,exerciseDurationField,exerciseIntensityField].forEach(el=>{el.disabled=skipped});exerciseMoodsRow.hidden=skipped;exerciseMemo.parentElement.hidden=skipped;setHeaderScore('exercise',skipped?'0 / 10점':data.exerciseDone==='O'?'O':'—')};updateExercise()
+ const updateExercise=()=>{const skipped=data.exerciseDone==='X';exerciseRow.classList.toggle('is-exercise-skipped',skipped);alternativeActivity.closest('.calendar-health-field').hidden=!skipped;[exerciseTypeField,exerciseAreaField,exerciseDurationField,exerciseIntensityField].forEach(el=>{el.disabled=skipped});exerciseMoodsRow.hidden=skipped;exerciseMemo.closest('.calendar-health-field').hidden=skipped;setHeaderScore('exercise',skipped?'0 / 10점':data.exerciseDone==='O'?'O':'—')};updateExercise()
 }
 function renderCalendarTimeRecords(){
  const root=id('calendarDayTimeRecordGrid');if(!root)return;root.replaceChildren();
