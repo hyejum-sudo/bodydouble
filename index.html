@@ -1028,4 +1028,23 @@ body>main{padding-top:6px!important}
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]) #unifiedGrid.calendar-time-grid{grid-template-columns:42px minmax(0,1fr)!important;min-width:0}
 @media(max-width:1050px){#calendar .calendar-app-shell{grid-template-columns:175px minmax(0,1fr)}#calendar #calendarQuadrants{grid-template-columns:1fr}}
 @media(max-width:850px){#calendar .calendar-app-shell{grid-template-columns:1fr}#calendar .calendar-sidebar{display:block!important;position:static!important}#calendar .calendar-sidebar #miniCalendar,#calendar .calendar-sidebar .calendar-mini-head{display:none!important}#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{grid-template-columns:1fr!important}#calendar #calendarQuadrants{grid-template-columns:repeat(2,minmax(0,1fr))}#calendar #calendarDayMatrix{position:static}}
+</style><style id="calendar-day-matrix-controls">
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{align-items:start!important}
+#calendar #calendarDayMatrix{align-self:start!important;position:sticky!important;top:0!important;margin-top:0!important}
+#calendar #calendarQuadrants{align-content:start!important}
+#calendar .calendar-day-quad-heading{display:flex;align-items:center;justify-content:space-between;gap:4px}
+#calendar .calendar-day-quad-heading h4{margin:0!important}
+#calendar .calendar-day-quad-heading button{background:transparent!important;padding:2px 6px!important;font-size:15px}
+#calendar .calendar-day-quad-list{max-height:260px}
+#calendar .calendar-day-task{display:flex;flex-wrap:wrap;gap:3px;align-items:center;border-bottom:1px solid #0000000c;padding:4px 0;cursor:grab}
+#calendar .calendar-day-task.dragging{opacity:.5}
+#calendar .calendar-day-task-title{flex:1 1 65px;min-width:55px;width:75px!important;font-size:11px!important;border:0!important;background:transparent!important;padding:3px!important}
+#calendar .calendar-day-task-minutes{width:40px!important;flex:0 0 40px;font-size:10px!important;padding:3px!important}
+#calendar .calendar-day-task button{flex:0 0 auto;padding:2px 4px!important;font-size:11px!important;background:transparent!important}
+#calendar .calendar-day-task-due{width:100px!important;max-width:100%;font-size:10px!important;padding:2px!important}
+#calendar .calendar-task-subtasks{flex:1 0 100%;font-size:11px}
+#calendar .calendar-task-subtasks label{display:flex;gap:5px;align-items:center}
+#calendar .calendar-quad-add-input{margin:5px 0!important}
+#calendar .time-day-column.calendar-drop-target{background-color:#e4f2ff!important;outline:2px dashed #5795ce;outline-offset:-3px}
+@media(max-width:850px){#calendar #calendarDayMatrix{position:static!important}}
 </style></body></html>
