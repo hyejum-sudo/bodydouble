@@ -902,4 +902,11 @@ body>main{padding-top:6px!important}
 #calendar .time-day-column{position:relative;min-width:0;border-right:1px solid #e1e1e1;background:repeating-linear-gradient(to bottom,#e2e6e8 0,#e2e6e8 1px,#fff 1px,#fff 30px);touch-action:none;cursor:crosshair}
 #calendar .time-selection{position:absolute;left:1px;right:1px;background:#b4d9f0a8;border:1px solid #4c91bd;z-index:2;pointer-events:none;font-size:10px;padding:3px}
 #calendar .time-event{position:absolute;left:2px;right:2px;width:auto;z-index:1;margin:0!important;white-space:normal;overflow:hidden;cursor:pointer;font-size:10px;padding:3px 4px}
+</style><style id="calendar-single-week-scrollbar">
+/* Week/day timeline uses the page's single vertical scrollbar. */
+#calendar #unifiedGrid.calendar-time-grid{overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important;max-height:none!important;height:auto!important;scrollbar-width:none!important}
+#calendar #unifiedGrid.calendar-time-grid::-webkit-scrollbar{display:none!important}
+#calendar:has(#unifiedGrid.calendar-time-grid)>.panel:first-child{overflow:visible!important;max-height:none!important;height:auto!important}
+#calendar #unifiedGrid.calendar-time-grid .time-day-column,#calendar #unifiedGrid.calendar-time-grid .time-ruler{overflow:visible!important;max-height:none!important}
+#calendar #unifiedGrid.calendar-time-grid .time-day-column::-webkit-scrollbar,#calendar #unifiedGrid.calendar-time-grid .time-ruler::-webkit-scrollbar{display:none!important}
 </style></body></html>
