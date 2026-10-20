@@ -483,18 +483,18 @@ function renderCalendarDayMatrix(){
 function renderCalendarTimeRecords(){
  const root=id('calendarDayTimeRecordGrid');if(!root)return;root.replaceChildren();
  const periods=[{name:'새벽·아침',start:5,end:10},{name:'오전·점심',start:10,end:15},{name:'오후',start:15,end:20},{name:'저녁·밤',start:20,end:24}];
- const items=read().items.filter(x=>dateOf(x)===chosen&&(x.type==='task'||x.type==='event'||x.type==='diary'||x.type==='memo'));
- const minutes=v=>{const match=/^(\d{1,2}):(\d{2})$/.exec(v||'');return match?Number(match[1])*60+Number(match[2]):null};
- periods.forEach(period=>{
+ let saved={};try{saved=JSON.parse(localStorage.getItem('moyo-day-time-notes-v1')||'{}')||{}}catch(e){}
+ const selectedDate=chosen;
+ periods.forEach((period,index)=>{
   const card=document.createElement('div');card.className='calendar-day-record-period';
   const head=document.createElement('div');head.className='calendar-day-record-head';
   const name=document.createElement('strong');name.textContent=period.name;
   const range=document.createElement('span');range.textContent=String(period.start).padStart(2,'0')+':00–'+String(period.end).padStart(2,'0')+':00';
   head.append(name,range);card.append(head);
-  const matches=items.filter(x=>{const time=minutes(x.startTime||x.time||x.entryTime);return time!==null&&time>=period.start*60&&time<period.end*60}).sort((a,b)=>minutes(a.startTime||a.time||a.entryTime)-minutes(b.startTime||b.time||b.entryTime));
-  if(!matches.length){const empty=document.createElement('p');empty.className='calendar-day-record-empty';empty.textContent='기록 없음';card.append(empty)}
-  matches.forEach(x=>{const line=document.createElement('div');line.className='calendar-day-record-line';const time=document.createElement('span');time.textContent=x.startTime||x.time||x.entryTime||'';const title=document.createElement('span');title.textContent=x.title||'';title.title=x.title||'';line.append(time,title);if(x.type==='task'){const mark=document.createElement('span');mark.textContent=x.completed?'✓ 완료':'진행 전';mark.className=x.completed?'is-done':'is-pending';line.append(mark)}line.onclick=()=>editCalItem(x.id);card.append(line)});
-  root.append(card)
+  const area=document.createElement('textarea');area.className='calendar-day-record-memo';area.placeholder='자유롭게 기록하세요…';area.rows=5;area.setAttribute('aria-label',period.name+' 메모');
+  const key=selectedDate+'-'+index;area.value=saved[key]||'';
+  area.addEventListener('input',()=>{let notes={};try{notes=JSON.parse(localStorage.getItem('moyo-day-time-notes-v1')||'{}')||{}}catch(e){}if(area.value)notes[key]=area.value;else delete notes[key];try{localStorage.setItem('moyo-day-time-notes-v1',JSON.stringify(notes))}catch(e){console.warn('메모 저장 실패',e)}});
+  card.append(area);root.append(card)
  })
 }
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));x.setUTCDate(x.getUTCDate()+4-(x.getUTCDay()||7));const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil((((x-y)/86400000)+1)/7)}
@@ -1099,4 +1099,9 @@ body>main{padding-top:6px!important}
 #calendar .calendar-day-record-line .is-pending{color:#9298a1;font-size:10px}
 @media(max-width:850px){#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{grid-template-columns:1fr!important}#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix{grid-column:1!important;grid-row:2!important}}
 @media(max-width:480px){#calendar #calendarDayTimeRecordGrid{grid-template-columns:1fr}}
+</style><style id="calendar-time-notes-editor">
+#calendar .calendar-day-record-period{display:flex;flex-direction:column;min-height:180px!important}
+#calendar .calendar-day-record-memo{display:block;width:100%;flex:1;min-height:125px;resize:vertical;border:1px solid transparent;border-radius:7px;background:#fffefa;color:inherit;padding:9px;font:inherit;font-size:12px;line-height:1.6;outline:none;white-space:pre-wrap;box-sizing:border-box}
+#calendar .calendar-day-record-memo:focus{border-color:#a3b6d2;box-shadow:0 0 0 2px #a3b6d225}
+#calendar .calendar-day-record-memo::placeholder{color:#a0a6ae}
 </style></body></html>
