@@ -494,41 +494,50 @@ function renderCalendarWellness(){
   el.value=data[key]??'';el.addEventListener('input',()=>save(key,el.value));wrap.append(el);parent.append(wrap);return el
  };
  const food=section('food','식단');
- const intro=document.createElement('p');intro.className='calendar-food-hint';intro.textContent='각 항목 0~10점 · 높을수록 좋음 · 입력한 식사만 평균';food.append(intro);
  const summary=document.createElement('div');summary.className='calendar-food-summary';food.append(summary);
- const foodHead=document.createElement('div');foodHead.className='calendar-food-grid calendar-food-scoring-grid calendar-food-heading';
- ['식사','시간','음식','양','탄단지','영양','첨가물','식사점수'].forEach(t=>{const span=document.createElement('span');span.textContent=t;foodHead.append(span)});food.append(foodHead);
  const scoreKeys=['amountScore','macroScore','nutritionScore','additivesScore'];
- const mealOutputs=[];
- const getScore=(mealIndex,key)=>{const value=data['food_'+mealIndex+'_'+key];return value!==undefined&&value!==''&&Number.isFinite(Number(value))?Math.max(0,Math.min(10,Number(value))):null};
+ const head=document.createElement('div');head.className='calendar-food-compact-row calendar-food-compact-head';
+ ['식사','시간(h)','음식','양(점)','탄단지(점)','영양(점)','첨가물(점)','평균(점)'].forEach(t=>{const el=document.createElement('span');el.textContent=t;head.append(el)});food.append(head);
+ const rows=[];
  const refresh=()=>{
-  const mealScores=[];
-  mealOutputs.forEach(({index,output})=>{
-   const scores=scoreKeys.map(key=>getScore(index,key)).filter(v=>v!==null);
-   if(scores.length){const average=scores.reduce((x,y)=>x+y,0)/scores.length;output.textContent=average.toFixed(1)+' / 10';mealScores.push(average)}
-   else output.textContent='—';
+  const totals=[];
+  rows.forEach(({i,row,output})=>{
+   const skipped=data['food_'+i+'_skipped']==='1';row.classList.toggle('is-skipped',skipped);
+   const scores=scoreKeys.map(key=>data['food_'+i+'_'+key]).filter(v=>v!==undefined&&v!==''&&Number.isFinite(Number(v))).map(Number);
+   const mean=scores.length?scores.reduce((x,y)=>x+y,0)/scores.length:null;
+   output.textContent=skipped?'안 먹음':mean===null?'—':mean.toFixed(1);
+   if(!skipped&&mean!==null)totals.push(mean)
   });
-  summary.textContent=mealScores.length?'하루 식단 점수  '+(mealScores.reduce((x,y)=>x+y,0)/mealScores.length*10).toFixed(1)+' / 100  ('+mealScores.length+'끼 평균)':'하루 식단 점수  — / 100';
+  summary.textContent=totals.length?'하루 식단 '+(totals.reduce((x,y)=>x+y,0)/totals.length*10).toFixed(1)+' / 100점':'하루 식단 — / 100점'
  };
  ['아침','점심','간식','저녁'].forEach((meal,i)=>{
-  const row=document.createElement('div');row.className='calendar-food-grid calendar-food-scoring-grid';
-  const title=document.createElement('strong');title.textContent=meal;row.append(title);
-  const time=document.createElement('input');time.type='time';time.setAttribute('aria-label',meal+' 시간');time.value=data['food_'+i+'_time']||'';time.oninput=()=>save('food_'+i+'_time',time.value);row.append(time);
-  const foodName=document.createElement('input');foodName.type='text';foodName.placeholder='먹은 음식';foodName.setAttribute('aria-label',meal+' 음식');foodName.value=data['food_'+i+'_amount']||'';foodName.oninput=()=>save('food_'+i+'_amount',foodName.value);row.append(foodName);
-  scoreKeys.forEach((key,j)=>{
-   const select=document.createElement('select');select.setAttribute('aria-label',meal+' '+['양','탄단지','영양','첨가물'][j]+' 점수');const blank=document.createElement('option');blank.value='';blank.textContent='—';select.append(blank);
-   for(let n=0;n<=10;n++){const option=document.createElement('option');option.value=String(n);option.textContent=n+'점';select.append(option)}
-   select.value=data['food_'+i+'_'+key]??'';
-   select.onchange=()=>{data['food_'+i+'_'+key]=select.value;save('food_'+i+'_'+key,select.value);refresh()};row.append(select)
-  });
-  const output=document.createElement('strong');output.className='calendar-food-meal-score';row.append(output);mealOutputs.push({index:i,output});food.append(row)
+  const row=document.createElement('div');row.className='calendar-food-compact-row';
+  const mealLabel=document.createElement('label');mealLabel.className='calendar-food-meal-label';const skip=document.createElement('input');skip.type='checkbox';skip.checked=data['food_'+i+'_skipped']==='1';skip.title='체크하면 먹지 않음 · 점수에서 제외';skip.setAttribute('aria-label',meal+' 안 먹음');skip.onchange=()=>{data['food_'+i+'_skipped']=skip.checked?'1':'0';save('food_'+i+'_skipped',data['food_'+i+'_skipped']);refresh()};const mealName=document.createElement('span');mealName.textContent=meal;mealLabel.append(skip,mealName);row.append(mealLabel);
+  const time=document.createElement('input');time.type='text';time.inputMode='decimal';time.placeholder='8';time.setAttribute('aria-label',meal+' 시간 숫자');time.value=data['food_'+i+'_time']||'';time.oninput=()=>save('food_'+i+'_time',time.value);row.append(time);
+  const name=document.createElement('input');name.type='text';name.placeholder='음식';name.setAttribute('aria-label',meal+' 음식');name.value=data['food_'+i+'_amount']||'';name.oninput=()=>save('food_'+i+'_amount',name.value);row.append(name);
+  scoreKeys.forEach((key,j)=>{const select=document.createElement('select');select.setAttribute('aria-label',meal+' '+['양','탄단지','영양','첨가물'][j]+' 점수');const blank=document.createElement('option');blank.value='';blank.textContent='—';select.append(blank);for(let n=0;n<=10;n++){const opt=document.createElement('option');opt.value=String(n);opt.textContent=String(n);select.append(opt)}select.value=data['food_'+i+'_'+key]??'';select.onchange=()=>{data['food_'+i+'_'+key]=select.value;save('food_'+i+'_'+key,select.value);refresh()};row.append(select)});
+  const output=document.createElement('strong');output.className='calendar-food-meal-score';row.append(output);rows.push({i,row,output});food.append(row)
  });
  refresh();
  if(data.meals){field(food,'meals','이전 식단 메모','textarea',{rows:2})}
- if(['macros','nutrition','additives'].some(k=>['0','1','2','3'].some(i=>data['food_'+i+'_'+k]))){const legacy=document.createElement('details');legacy.className='calendar-food-legacy';const label=document.createElement('summary');label.textContent='이전 식단 상세 기록';legacy.append(label);['아침','점심','간식','저녁'].forEach((meal,i)=>{const values=['macros','nutrition','additives'].map((key,j)=>['탄단지','영양','첨가물'][j]+': '+(data['food_'+i+'_'+key]||'')).filter(t=>!t.endsWith(': '));if(values.length){const p=document.createElement('p');p.textContent=meal+' · '+values.join(' / ');legacy.append(p)}});food.append(legacy)}
- const sleep=section('sleep','수면');const sleepFields=document.createElement('div');sleepFields.className='calendar-health-two';sleep.append(sleepFields);
- field(sleepFields,'sleepHours','수면 시간 (시간)','number',{min:0,max:24,step:0.5,placeholder:'예: 7.5'});
- field(sleepFields,'sleepQuality','수면 퀄리티','select',{options:['','매우 나쁨','나쁨','보통','좋음','매우 좋음']});
+ if(['macros','nutrition','additives'].some(k=>['0','1','2','3'].some(i=>data['food_'+i+'_'+k]))){const legacy=document.createElement('details');legacy.className='calendar-food-legacy';const label=document.createElement('summary');label.textContent='이전 상세 기록';legacy.append(label);['아침','점심','간식','저녁'].forEach((meal,i)=>{const values=['macros','nutrition','additives'].map((key,j)=>['탄단지','영양','첨가물'][j]+': '+(data['food_'+i+'_'+key]||'')).filter(t=>!t.endsWith(': '));if(values.length){const p=document.createElement('p');p.textContent=meal+' · '+values.join(' / ');legacy.append(p)}});food.append(legacy)}
+ const sleep=section('sleep','수면');
+ const sleepHint=document.createElement('p');sleepHint.className='calendar-food-hint';sleepHint.textContent='별 5개 · 0.5점 단위 · 시간/위생/퀄리티 각각 평가';sleep.append(sleepHint);
+ const sleepScoreFields=document.createElement('div');sleepScoreFields.className='calendar-sleep-score-fields';sleep.append(sleepScoreFields);
+ const starField=(key,label,legacyKey)=>{
+  const row=document.createElement('div');row.className='calendar-sleep-score-row';const title=document.createElement('span');title.textContent=label;row.append(title);
+  const stars=document.createElement('div');stars.className='calendar-sleep-stars';stars.setAttribute('role','group');stars.setAttribute('aria-label',label+' 별점');
+  let current=Number(data[key])||0;const score=document.createElement('output');
+  const paint=()=>{stars.querySelectorAll('button').forEach((btn,i)=>{const n=(i+1)*0.5;btn.classList.toggle('filled',n<=current);btn.setAttribute('aria-pressed',String(n===current))});score.textContent=current.toFixed(1)+' / 5'};
+  for(let n=1;n<=10;n++){const btn=document.createElement('button');btn.type='button';btn.className='calendar-sleep-halfstar';btn.textContent='★';btn.title=(n/2).toFixed(1)+'점';btn.setAttribute('aria-label',(n/2).toFixed(1)+'점');btn.onclick=()=>{current=current===n/2?0:n/2;data[key]=String(current);save(key,String(current));paint()};stars.append(btn)}
+  row.append(stars,score);sleepScoreFields.append(row);paint()
+ };
+ starField('sleepTimeScore','수면 시간');
+ starField('sleepHygieneScore','수면 위생');
+ starField('sleepQualityScore','수면 퀄리티');
+ const sleepLegacy=document.createElement('details');sleepLegacy.className='calendar-sleep-legacy';const legacySummary=document.createElement('summary');legacySummary.textContent='수면 시간 실제값 / 이전 기록';sleepLegacy.append(legacySummary);
+ field(sleepLegacy,'sleepHours','실제 수면 시간 (시간)','number',{min:0,max:24,step:0.5});
+ if(data.sleepQuality){const note=document.createElement('p');note.textContent='이전 퀄리티: '+data.sleepQuality;sleepLegacy.append(note)}sleep.append(sleepLegacy);
  const body=section('body','몸');const bodyFields=document.createElement('div');bodyFields.className='calendar-health-two';body.append(bodyFields);
  field(bodyFields,'painArea','통증 부위','text',{placeholder:'예: 왼쪽 어깨'});
  const painWrap=document.createElement('div');painWrap.className='calendar-health-field';const painTitle=document.createElement('span');painTitle.textContent='통증 정도 (0~10)';painWrap.append(painTitle);
@@ -1245,4 +1254,27 @@ body>main{padding-top:6px!important}
 #calendar .time-event.task .calendar-time-task-actions button{padding:2px 4px!important;min-width:18px!important}
 #calendar .time-event.task{min-width:0}
 #calendar .time-event.task .calendar-task-timing-row{overflow-x:auto;scrollbar-width:thin}
+</style><style id="calendar-compact-food-sleep-stars">
+#calendar .calendar-food-compact-row{display:grid!important;grid-template-columns:48px 42px minmax(80px,1fr) repeat(4,46px) 52px!important;gap:3px!important;align-items:center!important;width:100%!important;min-width:0!important}
+#calendar .calendar-food-compact-head span{font-size:9px;line-height:1.2;white-space:normal}
+#calendar .calendar-food-compact-row input:not([type=checkbox]),#calendar .calendar-food-compact-row select{width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:4px 2px!important;font-size:10px!important;border:1px solid #dfe3e9;border-radius:4px}
+#calendar .calendar-food-compact-row input[type=checkbox]{width:12px;height:12px;margin:0}
+#calendar .calendar-food-meal-label{display:flex;align-items:center;gap:3px;font-size:10px}
+#calendar .calendar-food-compact-row.is-skipped{opacity:.38;filter:grayscale(1);background:#ececec}
+#calendar .calendar-food-compact-row.is-skipped input:not([type=checkbox]),#calendar .calendar-food-compact-row.is-skipped select{pointer-events:none}
+#calendar .calendar-food-summary{font-size:13px!important;padding:7px!important}
+#calendar .calendar-health-section[data-section="food"] .calendar-health-body{overflow-x:visible!important;padding:8px!important}
+#calendar .calendar-sleep-score-fields{display:flex;flex-direction:column;gap:8px}
+#calendar .calendar-sleep-score-row{display:grid;grid-template-columns:75px minmax(0,1fr) 45px;align-items:center;gap:6px;font-size:11px}
+#calendar .calendar-sleep-stars{display:flex;align-items:center;gap:0;white-space:nowrap}
+#calendar .calendar-sleep-halfstar{background:none!important;border:0!important;padding:0!important;margin:0!important;font-size:19px!important;line-height:1!important;width:10px!important;min-width:10px!important;color:#cbd0d6!important;cursor:pointer;overflow:hidden}
+#calendar .calendar-sleep-halfstar:nth-child(odd){direction:ltr;clip-path:inset(0 0 0 0)}
+#calendar .calendar-sleep-halfstar:nth-child(even){direction:rtl}
+#calendar .calendar-sleep-halfstar.filled{color:#e9ad35!important}
+#calendar .calendar-sleep-score-row output{font-size:10px;white-space:nowrap}
+#calendar .calendar-sleep-legacy{font-size:11px}
+#calendar .time-event.task .calendar-task-timing-row{display:grid!important;grid-template-columns:max-content max-content minmax(0,1fr) auto!important;align-items:center!important;gap:5px!important;overflow:visible!important}
+#calendar .time-event.task .calendar-task-clock{min-width:0;overflow:hidden;text-overflow:ellipsis}
+#calendar .time-event.task .calendar-time-task-actions{grid-column:4!important;justify-self:end!important;margin-left:0!important}
+@media(max-width:700px){#calendar .calendar-food-compact-row{grid-template-columns:44px 36px minmax(65px,1fr) repeat(4,38px) 42px!important}}
 </style></body></html>
