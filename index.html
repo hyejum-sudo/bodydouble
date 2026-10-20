@@ -1104,4 +1104,12 @@ body>main{padding-top:6px!important}
 #calendar .calendar-day-record-memo{display:block;width:100%;flex:1;min-height:125px;resize:vertical;border:1px solid transparent;border-radius:7px;background:#fffefa;color:inherit;padding:9px;font:inherit;font-size:12px;line-height:1.6;outline:none;white-space:pre-wrap;box-sizing:border-box}
 #calendar .calendar-day-record-memo:focus{border-color:#a3b6d2;box-shadow:0 0 0 2px #a3b6d225}
 #calendar .calendar-day-record-memo::placeholder{color:#a0a6ae}
+</style><style id="calendar-sticky-day-sidebar">
+@media(min-width:851px){
+ #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{align-items:start!important}
+ #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]) #calendarDayMatrix:not([hidden]){position:sticky!important;top:12px!important;align-self:start!important;max-height:calc(100vh - 24px)!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;z-index:5}
+}
+@media(max-width:850px){
+ #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]) #calendarDayMatrix:not([hidden]){position:sticky!important;top:0!important;max-height:65vh!important;overflow-y:auto!important;z-index:5}
+}
 </style></body></html>
