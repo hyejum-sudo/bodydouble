@@ -550,9 +550,9 @@ textarea{min-height:55px}
 const nav=document.querySelector('main nav[aria-label="메뉴"]');
 if(!nav)return;
 const storageKey='moyo-tab-order-v1';
-const tabs=()=>Array.from(nav.querySelectorAll('button[data-tab]'));
+const tabGroup=nav.querySelector('.main-tab-group')||nav;const tabs=()=>Array.from(tabGroup.querySelectorAll('button[data-tab]'));
 function persist(){try{localStorage.setItem(storageKey,JSON.stringify(tabs().map(b=>b.dataset.tab)))}catch(e){console.warn('Tab order not saved',e)}}
-try{const saved=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(saved)){saved.forEach(name=>{const b=tabs().find(el=>el.dataset.tab===name);if(b)nav.appendChild(b)})}}catch(e){}
+try{const saved=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(saved)){saved.forEach(name=>{const b=tabs().find(el=>el.dataset.tab===name);if(b)tabGroup.appendChild(b)})}}catch(e){}
 let dragging=null;
 tabs().forEach(btn=>{
 btn.draggable=true;
@@ -560,7 +560,7 @@ btn.title=(btn.title?btn.title+' · ':'')+'드래그하여 탭 순서 변경';
 btn.addEventListener('dragstart',e=>{dragging=btn;btn.classList.add('tab-dragging');if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',btn.dataset.tab)}});
 btn.addEventListener('dragover',e=>{if(!dragging||dragging===btn)return;e.preventDefault();btn.classList.add('tab-drop-target');if(e.dataTransfer)e.dataTransfer.dropEffect='move'});
 btn.addEventListener('dragleave',()=>btn.classList.remove('tab-drop-target'));
-btn.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();btn.classList.remove('tab-drop-target');if(!dragging||dragging===btn)return;const bounds=btn.getBoundingClientRect();nav.insertBefore(dragging,e.clientX<bounds.left+bounds.width/2?btn:btn.nextSibling);persist()});
+btn.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();btn.classList.remove('tab-drop-target');if(!dragging||dragging===btn)return;const bounds=btn.getBoundingClientRect();tabGroup.insertBefore(dragging,e.clientX<bounds.left+bounds.width/2?btn:btn.nextSibling);persist()});
 btn.addEventListener('dragend',()=>{dragging=null;tabs().forEach(x=>x.classList.remove('tab-dragging','tab-drop-target'))});
 });
 })();
