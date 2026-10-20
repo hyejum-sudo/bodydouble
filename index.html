@@ -572,12 +572,13 @@ function renderCalendarWellness(){
  if(data.mood&&!data.moodChoice){const previous=document.createElement('p');previous.className='calendar-mood-hint';previous.textContent='이전 기분 기록: '+data.mood;mood.append(previous)}
 
  const exercise=section('exercise','운동');
- const exerciseChoice=field(exercise,'exerciseDone','운동 여부','select',{options:['','O','X']});
- const exerciseDetails=document.createElement('div');exerciseDetails.className='calendar-health-two';exercise.append(exerciseDetails);
- field(exerciseDetails,'exerciseType','종류','text',{placeholder:'러닝, 요가, 헬스 등'});
- field(exerciseDetails,'exerciseArea','부위','text',{placeholder:'하체, 상체, 전신 등'});
- field(exerciseDetails,'exerciseIntensity','강도','select',{options:['','가벼움','보통','높음','매우 높음']});
- const updateExercise=()=>{exerciseDetails.hidden=exerciseChoice.value==='X'};exerciseChoice.addEventListener('change',updateExercise);updateExercise()
+ const exerciseRow=document.createElement('div');exerciseRow.className='calendar-exercise-one-row';exercise.append(exerciseRow);
+ const exerciseChoice=field(exerciseRow,'exerciseDone','여부','select',{options:['','O','X']});
+ field(exerciseRow,'exerciseType','종류','text',{placeholder:'요가/헬스'});
+ field(exerciseRow,'exerciseArea','부위','text',{placeholder:'하체/코어'});
+ field(exerciseRow,'exerciseIntensity','강도','select',{options:['','가벼움','보통','높음','매우 높음']});
+ field(exercise,'exerciseMemo','교정 · 추가 메모','textarea',{rows:3,placeholder:'오늘 느낀 점 / 교정할 자세·부위 / 다음 운동에서 추가할 것'});
+ const updateExercise=()=>{exerciseRow.classList.toggle('is-exercise-skipped',exerciseChoice.value==='X')};exerciseChoice.addEventListener('change',updateExercise);updateExercise()
 }
 function renderCalendarTimeRecords(){
  const root=id('calendarDayTimeRecordGrid');if(!root)return;root.replaceChildren();
@@ -1320,4 +1321,10 @@ body>main{padding-top:6px!important}
 #calendar .calendar-mood-method{border:1px solid #e6e8ec;border-radius:7px;padding:8px;font-size:11px}
 #calendar .calendar-mood-method-fields{display:flex;flex-direction:column;gap:7px;padding-top:7px}
 #calendar .calendar-mood-top .calendar-health-field{align-self:start}
+</style><style id="calendar-exercise-single-row">
+#calendar .calendar-exercise-one-row{display:grid!important;grid-template-columns:58px minmax(0,1.25fr) minmax(0,1fr) 84px!important;gap:6px!important;align-items:end!important;width:100%;min-width:0}
+#calendar .calendar-exercise-one-row .calendar-health-field{min-width:0}
+#calendar .calendar-exercise-one-row .calendar-health-field input,#calendar .calendar-exercise-one-row .calendar-health-field select{width:100%!important;min-width:0!important;font-size:11px!important;padding:5px 3px!important}
+#calendar .calendar-exercise-one-row.is-exercise-skipped .calendar-health-field:not(:first-child){opacity:.45}
+#calendar .calendar-exercise-one-row.is-exercise-skipped .calendar-health-field:not(:first-child) input,#calendar .calendar-exercise-one-row.is-exercise-skipped .calendar-health-field:not(:first-child) select{background:#f0f0f0!important}
 </style></body></html>
