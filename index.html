@@ -1049,4 +1049,17 @@ body>main{padding-top:6px!important}
 #calendar .calendar-quad-add-input{margin:5px 0!important}
 #calendar .time-day-column.calendar-drop-target{background-color:#e4f2ff!important;outline:2px dashed #5795ce;outline-offset:-3px}
 @media(max-width:850px){#calendar #calendarDayMatrix{position:static!important}}
+</style><style id="calendar-quadrant-original-colors">
+/* Match the original Eisenhower matrix palette, including grey quadrant four. */
+#calendar #calendarQuadrants .calendar-day-quad:nth-child(1){--quad-accent:#e9b8a9!important;--quad-bg:#fff7f2!important;background:#fff7f2!important;border-top-color:#e9b8a9!important}
+#calendar #calendarQuadrants .calendar-day-quad:nth-child(2){--quad-accent:#a8d4bc!important;--quad-bg:#f4fbf6!important;background:#f4fbf6!important;border-top-color:#a8d4bc!important}
+#calendar #calendarQuadrants .calendar-day-quad:nth-child(3){--quad-accent:#e6d3a0!important;--quad-bg:#fffbf1!important;background:#fffbf1!important;border-top-color:#e6d3a0!important}
+#calendar #calendarQuadrants .calendar-day-quad:nth-child(4){--quad-accent:#a5abb1!important;--quad-bg:#f0f1f2!important;background:#f0f1f2!important;border-top-color:#a5abb1!important}
+#calendar #calendarQuadrants .calendar-day-quad[hidden]{display:none!important}
+#calendar #calendarQuadrants:has(.calendar-day-quad.selected){grid-template-columns:minmax(0,1fr)!important}
+#calendar .calendar-day-quad-heading h4{cursor:pointer;border-radius:6px;padding:4px 5px!important}
+#calendar .calendar-day-quad-heading h4:hover,#calendar .calendar-day-quad-heading h4:focus-visible{outline:1px solid #8194a9;background:#ffffff80}
+#calendar .calendar-day-quad.selected{outline:2px solid var(--quad-accent)!important}
+#calendar .calendar-record-panel #unifiedDayItems{display:none!important}
+#calendar .calendar-record-panel:has(#unifiedSave) #unifiedDayItems{display:none!important}
 </style></body></html>
