@@ -967,4 +967,31 @@ body>main{padding-top:6px!important}
 .calendar-context-menu button.danger{color:#c63232!important}
 @media(max-width:850px){#calendar .calendar-app-shell{grid-template-columns:1fr}#calendar .calendar-sidebar{position:static;display:none}#calendar .calendar-toolbar{flex-wrap:wrap}#calendar .calendar-actions{justify-content:flex-start}#calendar #unifiedGrid.calendar-time-grid{min-width:0}#calendar .time-date-head{font-size:10px!important}}
 @media(max-width:580px){#calendar .calendar-actions #calendarUpgrade,#calendar .calendar-actions #calendarUser,#calendar .calendar-actions #calendarSettings{display:none}#calendar .calendar-period strong{font-size:14px}}
+</style><style id="calendar-day-split-and-manage">
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;border:0!important;align-items:start!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]) .unified-weekdays{display:none!important}
+#calendar #calendarDayMatrix[hidden]{display:none!important}
+#calendar #calendarDayMatrix{display:block;min-width:0;background:#fff;border:1px solid #e4e8ed;border-radius:12px;padding:9px;position:sticky;top:8px}
+#calendar #calendarDayMatrix>h3{font-size:14px;margin:3px 4px 10px}
+#calendar #calendarQuadrants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#calendar .calendar-day-quad{min-width:0;min-height:165px;border:1px solid #e1e4e8;border-top:3px solid var(--quad-accent);border-radius:9px;padding:8px;background:var(--quad-bg)}
+#calendar .calendar-day-quad:nth-child(1){--quad-accent:#e9b8a9;--quad-bg:#fff7f2}
+#calendar .calendar-day-quad:nth-child(2){--quad-accent:#a8d4bc;--quad-bg:#f4fbf6}
+#calendar .calendar-day-quad:nth-child(3){--quad-accent:#e6d3a0;--quad-bg:#fffbf1}
+#calendar .calendar-day-quad:nth-child(4){--quad-accent:#a5abb1;--quad-bg:#f0f1f2}
+#calendar .calendar-day-quad h4{font-size:11px;margin:0 0 7px}
+#calendar .calendar-day-quad>input{width:100%;min-width:0;font-size:11px;padding:5px!important;border-radius:5px}
+#calendar .calendar-day-quad-list{max-height:190px;overflow-y:auto;margin-top:5px}
+#calendar .calendar-day-task{display:flex;align-items:center;gap:4px;font-size:11px;padding:4px 0;overflow-wrap:anywhere}
+#calendar .calendar-day-task input{width:12px;height:12px;flex:0 0 12px}
+#calendar .calendar-category-row{display:flex;align-items:center;gap:3px}
+#calendar .calendar-category-row .calendar-category{flex:1;min-width:0}
+#calendar .calendar-category-delete{padding:3px 6px!important;font-size:14px!important;background:transparent!important;color:#89939e!important}
+#calendar .calendar-category-delete:hover{color:#c22!important}
+#calendar .calendar-entry-category-head{display:flex;align-items:center;gap:5px;min-width:0;font-size:12px;white-space:nowrap}
+#calendar .calendar-entry-category-head select{min-width:0;width:160px;max-width:100%;padding:5px!important;font-size:12px}
+#calendarEntryDialog .calendar-input-heading{justify-content:space-between!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]) #unifiedGrid.calendar-time-grid{grid-template-columns:42px minmax(0,1fr)!important;min-width:0}
+@media(max-width:1050px){#calendar .calendar-app-shell{grid-template-columns:175px minmax(0,1fr)}#calendar #calendarQuadrants{grid-template-columns:1fr}}
+@media(max-width:850px){#calendar .calendar-app-shell{grid-template-columns:1fr}#calendar .calendar-sidebar{display:block!important;position:static!important}#calendar .calendar-sidebar #miniCalendar,#calendar .calendar-sidebar .calendar-mini-head{display:none!important}#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{grid-template-columns:1fr!important}#calendar #calendarQuadrants{grid-template-columns:repeat(2,minmax(0,1fr))}#calendar #calendarDayMatrix{position:static}}
 </style></body></html>
