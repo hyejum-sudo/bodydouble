@@ -822,26 +822,14 @@ body>main>nav{margin-bottom:8px!important}
 #calendar #calendarEntryDialog .calendar-saved-checklist label{display:flex;align-items:center;gap:6px}
 #calendar #calendarEntryDialog .calendar-saved-checklist input{margin:0!important}
 #calendar #calendarEntryDialog .unified-item:has(.calendar-saved-checklist){flex-wrap:wrap}
-</style><style id="calendar-nav-inline-layout">
-body>main>nav{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:4px!important;margin-bottom:7px!important}
-body>main>nav>button[data-tab]{flex:0 0 auto!important}
-body>main>nav .calendar-top-controls{display:none!important;margin-left:auto!important;align-items:center!important;gap:3px!important;flex-wrap:nowrap!important}
-body>main>nav:has(button[data-tab="calendar"].active) .calendar-top-controls{display:inline-flex!important}
-#calendar>.panel{margin-top:0!important}
-@media(max-width:780px){body>main>nav .calendar-top-controls{flex-wrap:wrap!important;justify-content:flex-end!important}}
-</style><style id="calendar-nav-single-row-alignment">
-body>main>nav{display:flex!important;flex-flow:row nowrap!important;align-items:center!important;justify-content:flex-start!important;width:100%!important;gap:5px!important}
-body>main>nav>button[data-tab]{flex:0 0 auto!important;white-space:nowrap!important}
-body>main>nav .calendar-top-controls{margin-left:auto!important;flex:0 0 auto!important;align-self:center!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:nowrap!important;gap:3px!important;min-height:0!important}
-body>main>nav .calendar-top-controls .calendar-main-filters{display:inline-flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:2px!important}
-body>main>nav .calendar-top-controls button,body>main>nav .calendar-top-controls select{white-space:nowrap!important}
-@media(max-width:900px){body>main>nav{overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:thin}body>main>nav .calendar-top-controls{flex-wrap:nowrap!important;margin-left:auto!important}}
-</style><style id="calendar-nav-explicit-left-right-groups">
-body>main>nav[aria-label="메뉴"]{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:nowrap!important;gap:0!important;width:100%!important;min-width:0!important}
-body>main>nav .main-tab-group{display:flex!important;align-items:center!important;justify-content:flex-start!important;flex:0 0 auto!important;gap:5px!important;white-space:nowrap!important}
-body>main>nav .main-tab-group>button{flex:0 0 auto!important;white-space:nowrap!important}
-body>main>nav #calendarTopControls{margin:0 0 0 auto!important;flex:0 0 auto!important;align-items:center!important;justify-content:flex-end!important;align-self:center!important;flex-wrap:nowrap!important;white-space:nowrap!important}
+</style><style id="single-row-navigation-final">
+body>main>nav[aria-label="메뉴"]{display:grid!important;grid-template-columns:max-content minmax(0,1fr)!important;align-items:center!important;justify-content:stretch!important;column-gap:0!important;row-gap:0!important;flex-wrap:nowrap!important;width:100%!important;max-width:100%!important;margin:0 0 5px!important;padding:0!important;min-height:34px!important;overflow:visible!important}
+body>main>nav .main-tab-group{grid-column:1!important;display:flex!important;flex-flow:row nowrap!important;align-items:center!important;justify-content:flex-start!important;gap:2px!important;margin:0!important;padding:0!important;width:max-content!important}
+body>main>nav .main-tab-group>button{flex:none!important;margin:0!important;padding:6px 9px!important;min-height:30px!important;white-space:nowrap!important;font-size:12px!important}
+body>main>nav #calendarTopControls{grid-column:2!important;display:none!important;justify-self:end!important;align-self:center!important;align-items:center!important;justify-content:flex-end!important;flex-flow:row nowrap!important;gap:2px!important;margin:0!important;padding:0!important;width:max-content!important;max-width:none!important}
 body>main>nav:has(.main-tab-group>button[data-tab="calendar"].active) #calendarTopControls{display:inline-flex!important}
-body>main>nav:not(:has(.main-tab-group>button[data-tab="calendar"].active)) #calendarTopControls{display:none!important}
-@media(max-width:900px){body>main>nav[aria-label="메뉴"]{overflow-x:auto!important}body>main>nav .main-tab-group{position:sticky;left:0;z-index:2;background:var(--nav-bg,white)}}
+body>main>nav #calendarTopControls .calendar-main-filters{display:inline-flex!important;flex-flow:row nowrap!important;align-items:center!important;gap:1px!important;margin:0 3px 0 0!important;padding:0!important}
+body>main>nav #calendarTopControls .calendar-main-filters label{display:inline-flex!important;align-items:center!important;gap:0!important;padding:0 1px!important;margin:0!important}
+body>main>nav #calendarTopControls button,body>main>nav #calendarTopControls select{margin:0!important;padding:5px 5px!important;min-height:29px!important;white-space:nowrap!important}
+@media(max-width:760px){body>main>nav[aria-label="메뉴"]{overflow-x:auto!important;overflow-y:hidden!important}body>main>nav .main-tab-group{position:static!important}body>main>nav #calendarTopControls{margin-left:8px!important}}
 </style></body></html>
