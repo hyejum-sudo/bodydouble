@@ -580,7 +580,7 @@ function renderCalendarWellness(){
  const thoughtInput=field(thoughtRow,'moodAutomaticThought','자동적 생각','textarea',{rows:2,placeholder:'머릿속에 떠오른 생각'});
  const moodReframe=field(thoughtRow,'moodReframe','전환 한마디','textarea',{rows:2,placeholder:'생각을 수용하고 작은 행동으로 전환'});if(!moodReframe.value){const old=data.moodEvidence||data.moodAcceptance||'';if(old){moodReframe.value=old;data.moodReframe=old;save('moodReframe',old)}}
  const aiHelp=document.createElement('button');aiHelp.type='button';aiHelp.className='calendar-mood-ai-help';aiHelp.textContent='AI로 전환 돕기 ↗';aiHelp.title='입력한 자동적 생각을 바탕으로 ChatGPT에서 전환 문장을 만들어요. 답변은 전환 칸에 직접 붙여넣으세요.';aiHelp.onclick=()=>{const thought=thoughtInput.value.trim();if(!thought){thoughtInput.focus();return}const prompt='ADHD 친화적인 CBT·ACT 코치처럼 다음 자동적 생각에 대해 비판하지 않고 수용하는 한 문장과, 실행 부담을 낮추는 전환 자기대화 한 문장을 한국어로 짧게 작성해줘. 생각: '+thought;window.open('https://chatgpt.com/?q='+encodeURIComponent(prompt),'_blank','noopener,noreferrer')};moodReframe.closest('.calendar-health-field').append(aiHelp);
- const moodTriple=(label,prefix,placeholder)=>{const row=document.createElement('div');row.className='calendar-mood-triple';mood.append(row);for(let n=1;n<=3;n++)field(row,prefix+n,label+' '+n,'text',{placeholder:placeholder})};
+ const moodTriple=(label,prefix,placeholder)=>{const row=document.createElement('div');row.className='calendar-mood-triple';mood.append(row);const heading=document.createElement('div');heading.className='calendar-mood-triple-title';heading.textContent=label+' · 3개 적어보기';row.append(heading);const fields=document.createElement('div');fields.className='calendar-mood-triple-inputs';row.append(fields);for(let n=1;n<=3;n++)field(fields,prefix+n,'','text',{placeholder:n+'. '+placeholder})};
  moodTriple('칭찬','moodPraise','작은 시도도 좋아');
  moodTriple('감사','moodGratitude','사소한 것도 괜찮아');
  moodTriple('그럼에도 불구하고 할 수 있는 활동','moodDespite','아주 작은 행동');
@@ -1665,4 +1665,16 @@ document.addEventListener('DOMContentLoaded',()=>{render();const target=document
 #calendar #calendarDayMatrix>#autoDiaryPanel>summary h3{flex:0 0 auto!important}
 #calendar #calendarDayMatrix>#autoDiaryPanel>summary small{margin-left:auto!important;text-align:right!important}
 @media(max-width:700px){#calendar .calendar-exercise-one-row{grid-template-columns:57px repeat(7,78px)!important;overflow-x:auto!important}}
+</style><style id="dev-mood-three-and-unified-triangle">
+#calendar .calendar-mood-triple{display:block!important;margin:7px 0 12px!important}
+#calendar .calendar-mood-triple-title{font-size:11px!important;font-weight:650!important;color:#4b645a!important;margin:0 0 5px!important}
+#calendar .calendar-mood-triple-inputs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+#calendar .calendar-mood-triple-inputs>.calendar-health-field{min-width:0!important;margin:0!important}
+#calendar .calendar-mood-triple-inputs>.calendar-health-field>span:empty{display:none!important}
+#calendar .calendar-mood-triple-inputs input{width:100%!important;min-width:0!important}
+#calendar #calendarDayMatrix .calendar-right-accordion>summary{list-style:none!important}
+#calendar #calendarDayMatrix .calendar-right-accordion>summary::-webkit-details-marker,#calendar #calendarDayMatrix>#autoDiaryPanel>summary::-webkit-details-marker{display:none!important}
+#calendar #calendarDayMatrix .calendar-right-accordion>summary::before,#calendar #calendarDayMatrix>#autoDiaryPanel>summary::before{content:'▶'!important;display:inline-block!important;flex:0 0 14px!important;width:14px!important;font-size:13px!important;line-height:1!important;color:#649c80!important;transform:rotate(0deg)!important;transition:transform .15s!important}
+#calendar #calendarDayMatrix .calendar-right-accordion[open]>summary::before,#calendar #calendarDayMatrix>#autoDiaryPanel[open]>summary::before{transform:rotate(90deg)!important}
+@media(max-width:550px){#calendar .calendar-mood-triple-inputs{grid-template-columns:repeat(3,minmax(90px,1fr))!important;overflow-x:auto!important}}
 </style></body></html>
