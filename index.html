@@ -1757,6 +1757,19 @@ body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]){overflow:hidden!
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix::-webkit-scrollbar,
 #calendar:not([hidden]) .calendar-sidebar::-webkit-scrollbar{display:block!important;width:9px!important}
 }
+</style><style id="day-scroll-chain-all">
+@media(min-width:851px){
+html,body{overflow-y:auto!important;overscroll-behavior-y:auto!important}
+body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]){overflow-y:auto!important;height:auto!important;max-height:none!important}
+#calendar:not([hidden]){overflow-y:visible!important;max-height:none!important}
+#calendar:not([hidden]) .calendar-app-shell{overflow:visible!important;min-height:calc(100dvh - 100px)!important;height:auto!important}
+#calendar:not([hidden]) .calendar-sidebar,
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid,
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix,
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]) .calendar-time-scroll{
+overscroll-behavior-y:auto!important;
+}
+}
 </style><style id="life-seven-styles">
 #lifeAreas{overflow:auto!important;max-height:calc(100dvh - 105px);padding:12px!important}
 #lifeAreas .life-overview{max-width:1100px;margin:auto;padding:20px}
