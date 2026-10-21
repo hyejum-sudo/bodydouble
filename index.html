@@ -1637,4 +1637,18 @@ document.addEventListener('DOMContentLoaded',()=>{render();const target=document
 #calendar .calendar-exercise-mood-number{display:flex!important;flex-direction:column!important;gap:3px!important;min-width:0!important}
 #calendar .calendar-exercise-short-memo{width:100%!important;max-width:100%!important}
 @media(max-width:700px){#calendar .calendar-exercise-one-row{gap:2px!important;overflow-x:auto!important;grid-template-columns:42px 85px 78px 78px 76px 56px 55px 55px!important}#calendar .calendar-exercise-one-row input{font-size:10px!important}}
+</style><style id="dev-unify-accordion-headings-and-remove-day-date">
+/* The selected date is already in the top toolbar: hide the duplicated large blue date cell only in day view. */
+#calendar .unified-grid[data-view="day"] .unified-daynum{display:none!important}
+#calendar .unified-grid[data-view="day"] .unified-day{min-height:0!important;padding:0!important;border:0!important;background:transparent!important}
+#calendar .unified-grid[data-view="day"] .unified-day.selected{outline:0!important}
+#calendar #calendarDayMatrix>.calendar-right-accordion,#calendar #calendarDayMatrix>#autoDiaryPanel{margin:0 0 6px!important;border:1px solid #e3e5ea!important;border-radius:9px!important;background:#fff!important;padding:0!important;min-height:0!important;box-shadow:none!important}
+#calendar #calendarDayMatrix>.calendar-right-accordion>summary,#calendar #calendarDayMatrix>#autoDiaryPanel>summary{display:flex!important;align-items:center!important;gap:7px!important;list-style:none!important;padding:9px 11px!important;margin:0!important;min-height:35px!important;font-size:12px!important;font-weight:650!important;line-height:1.35!important;background:#f7f8fa!important;border-radius:9px!important;color:#334b43!important;cursor:pointer!important}
+#calendar #calendarDayMatrix>.calendar-right-accordion>summary::-webkit-details-marker,#calendar #calendarDayMatrix>#autoDiaryPanel>summary::-webkit-details-marker{display:none!important}
+#calendar #calendarDayMatrix>.calendar-right-accordion>summary::before,#calendar #calendarDayMatrix>#autoDiaryPanel>summary::before{content:'▸';display:inline-block;flex:0 0 9px;font-size:11px!important;color:#71837a;transition:transform .15s}
+#calendar #calendarDayMatrix>.calendar-right-accordion[open]>summary::before,#calendar #calendarDayMatrix>#autoDiaryPanel[open]>summary::before{transform:rotate(90deg)}
+#calendar #calendarDayMatrix>#autoDiaryPanel>summary h3{font-size:12px!important;font-weight:650!important;color:inherit!important;line-height:1.35!important;margin:0!important}
+#calendar #calendarDayMatrix>#autoDiaryPanel>summary small{font-size:10px!important}
+#calendar #calendarDayMatrix>#autoDiaryPanel[open]>:not(summary){margin:7px 10px!important}
+#calendar #calendarDayMatrix>.calendar-right-accordion[open]>summary,#calendar #calendarDayMatrix>#autoDiaryPanel[open]>summary{border-bottom:1px solid #eceef1!important;border-radius:9px 9px 0 0!important}
 </style></body></html>
