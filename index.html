@@ -1735,4 +1735,13 @@ html:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]),body:has(#calend
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid,
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){min-height:0!important;height:100%!important;max-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;scrollbar-width:thin!important;position:relative!important;top:auto!important}
 }
+</style><style id="dev-three-pane-scroll-fix">
+@media(min-width:851px){
+#calendar:not([hidden]) .calendar-app-shell{display:grid!important;grid-template-columns:205px minmax(0,1fr)!important;min-height:0!important;height:100%!important;overflow:hidden!important}
+#calendar:not([hidden]) .calendar-app-shell>.calendar-sidebar{min-height:0!important;height:100%!important;overflow-y:scroll!important;overscroll-behavior:contain!important}
+#calendar:not([hidden]) .calendar-app-shell>.calendar-main-area{min-width:0!important;min-height:0!important;overflow:hidden!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;align-items:stretch!important;min-height:0!important;overflow:hidden!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid{grid-column:1!important;grid-row:1!important;display:block!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:scroll!important;overflow-x:auto!important;scrollbar-width:thin!important;overscroll-behavior:contain!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){grid-column:2!important;grid-row:1!important;display:block!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-width:thin!important;overscroll-behavior:contain!important;position:relative!important;top:auto!important}
+}
 </style></body></html>
