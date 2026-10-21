@@ -1712,4 +1712,16 @@ body>header>nav .nav-brand{font-size:8.8px!important;line-height:1.3!important}
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid{height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:auto!important;align-self:stretch!important;overscroll-behavior:contain!important}
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;position:relative!important;top:auto!important;align-self:stretch!important;overscroll-behavior:contain!important}
 }
-</style><style id="focus-compact-inputs-20261021">#startTimer[hidden],#pauseTimer[hidden]{display:none!important}#focusTask{height:36px!important;min-height:36px!important}#brainMinutes,#brainSubMinutes{width:76px!important;max-width:76px!important}#brainSubName{min-width:0!important;flex:1!important}.sub-quick{display:flex!important;align-items:center!important;gap:6px!important}</style></body></html>
+</style><style id="focus-compact-inputs-20261021">#startTimer[hidden],#pauseTimer[hidden]{display:none!important}#focusTask{height:36px!important;min-height:36px!important}#brainMinutes,#brainSubMinutes{width:76px!important;max-width:76px!important}#brainSubName{min-width:0!important;flex:1!important}.sub-quick{display:flex!important;align-items:center!important;gap:6px!important}</style><style id="dev-strict-two-pane-scroll-20261021">
+@media(min-width:851px){
+html:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]),body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]){height:100%!important;overflow:hidden!important}
+body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]){display:flex!important;flex-direction:column!important}
+body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"])>header{flex:0 0 auto!important}
+body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"])>main{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;width:100%!important;display:flex!important;flex-direction:column!important}
+#calendar:not([hidden]){flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"]){flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{flex:1 1 auto!important;height:auto!important;min-height:0!important;max-height:100%!important;overflow:hidden!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:stretch!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid,
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){height:100%!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;scrollbar-width:thin!important;position:relative!important;top:auto!important}
+}
+</style></body></html>
