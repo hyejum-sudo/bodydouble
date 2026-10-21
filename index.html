@@ -531,16 +531,16 @@ function renderCalendarWellness(){
  if(data.meals){field(food,'meals','이전 식단 메모','textarea',{rows:2})}
  if(['macros','nutrition','additives'].some(k=>['0','1','2','3'].some(i=>data['food_'+i+'_'+k]))){const legacy=document.createElement('details');legacy.className='calendar-food-legacy';const label=document.createElement('summary');label.textContent='이전 상세 기록';legacy.append(label);['아침','점심','간식','저녁'].forEach((meal,i)=>{const values=['macros','nutrition','additives'].map((key,j)=>['탄단지','영양','첨가물'][j]+': '+(data['food_'+i+'_'+key]||'')).filter(t=>!t.endsWith(': '));if(values.length){const p=document.createElement('p');p.textContent=meal+' · '+values.join(' / ');legacy.append(p)}});food.append(legacy)}
  const sleep=section('sleep','수면');
- const sleepHint=document.createElement('span');sleepHint.className='calendar-food-help-icon';sleepHint.textContent='ⓘ';sleepHint.title='수면 시간은 7~8시간이 만점(5점), 범위를 벗어나면 0.5시간마다 1점 감점 · 위생/퀄리티는 별 5개';sleepHint.setAttribute('aria-label',sleepHint.title);sleepHint.tabIndex=0;sleep.append(sleepHint);
+ 
  const sleepScoreFields=document.createElement('div');sleepScoreFields.className='calendar-sleep-score-fields';sleep.append(sleepScoreFields);
  const updateSleepHeader=()=>{const vals=['sleepTimeScore','sleepHygieneScore','sleepQualityScore'].map(k=>getHeaderScore(k)).filter(v=>v!==null);const awakenings=Math.max(0,Math.floor(Number(data.sleepAwakenings)||0));const base=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length*2:null;setHeaderScore('sleep',base===null?'—':Math.max(0,base-awakenings).toFixed(1)+' / 10점')};
- const starField=(key,label,legacyKey)=>{
-  const row=document.createElement('div');row.className='calendar-sleep-score-row';const title=document.createElement('span');title.textContent=label;row.append(title);
-  const stars=document.createElement('div');stars.className='calendar-sleep-stars';stars.setAttribute('role','group');stars.setAttribute('aria-label',label+' 별점');
-  let current=Number(data[key])||0;const score=document.createElement('output');
-  const paint=()=>{stars.querySelectorAll('button').forEach((btn,i)=>{const n=(i+1)*0.5;btn.classList.toggle('filled',n<=current);btn.setAttribute('aria-pressed',String(n===current))});score.textContent=(current*2).toFixed(0)+' / 10점';updateSleepHeader()};
-  for(let n=1;n<=10;n++){const btn=document.createElement('button');btn.type='button';btn.className='calendar-sleep-halfstar';btn.textContent='★';btn.title=(n/2).toFixed(1)+'점';btn.setAttribute('aria-label',(n/2).toFixed(1)+'점');btn.onclick=()=>{current=current===n/2?0:n/2;data[key]=String(current);save(key,String(current));paint()};stars.append(btn)}
-  const head=document.createElement('div');head.className='calendar-sleep-score-heading';head.append(title,score);row.replaceChildren(head,stars);sleepScoreFields.append(row);paint()
+ const starField=(key,label)=>{
+  const row=document.createElement('label');row.className='calendar-health-field calendar-sleep-score-row calendar-sleep-number-row';
+  const title=document.createElement('span');title.textContent=label;row.append(title);
+  const input=document.createElement('input');input.type='number';input.min='0';input.max='10';input.step='1';input.placeholder='0~10';input.setAttribute('aria-label',label+' 10점 만점');
+  const stored=Number(data[key]);input.value=data[key]!==undefined&&data[key]!==''&&Number.isFinite(stored)?String(Math.max(0,Math.min(10,Math.round(stored*2)))):'';
+  input.oninput=()=>{if(input.value===''){data[key]='';save(key,'')}else{const n=Math.max(0,Math.min(10,Number(input.value)));data[key]=String(n/2);save(key,String(n/2))}updateSleepHeader()};
+  row.append(input);sleepScoreFields.append(row)
  };
  const sleepDurationRow=document.createElement('label');sleepDurationRow.className='calendar-health-field';const sleepDurationLabel=document.createElement('span');sleepDurationLabel.textContent='시간';const durationHelp=document.createElement('span');durationHelp.className='calendar-sleep-duration-help';durationHelp.textContent='ⓘ';durationHelp.title='7~8시간이 만점(5점)이며, 7시간 미만 또는 8시간 초과 시 0.5시간마다 1점 감점됩니다.';durationHelp.setAttribute('aria-label',durationHelp.title);durationHelp.tabIndex=0;const durationHeading=document.createElement('span');durationHeading.className='calendar-sleep-duration-heading';durationHeading.append(sleepDurationLabel,durationHelp);const sleepDuration=document.createElement('input');sleepDuration.type='number';sleepDuration.min='0';sleepDuration.max='24';sleepDuration.step='0.5';sleepDuration.placeholder='7.5';sleepDuration.value=data.sleepHours??'';const sleepDurationScore=document.createElement('output');const updateDuration=()=>{const hours=Number(sleepDuration.value);if(sleepDuration.value===''||!Number.isFinite(hours)||hours<0||hours>24){sleepDurationScore.textContent='—';save('sleepTimeScore','');data.sleepTimeScore='';updateSleepHeader();return}const deviation=hours<7?7-hours:hours>8?hours-8:0;const score=Math.max(0,5-Math.ceil((deviation-1e-8)/0.5));sleepDurationScore.textContent=(score*2)+' / 10점';data.sleepTimeScore=String(score);save('sleepTimeScore',String(score));updateSleepHeader()};sleepDuration.addEventListener('input',()=>{data.sleepHours=sleepDuration.value;save('sleepHours',sleepDuration.value);updateDuration()});sleepDurationRow.append(durationHeading,sleepDuration,sleepDurationScore);sleepScoreFields.append(sleepDurationRow);if(sleepDuration.value!=='')updateDuration();
  starField('sleepHygieneScore','위생');
@@ -569,6 +569,7 @@ function renderCalendarWellness(){
   check.onchange=()=>{const value=key==='menstruationStatus'?(check.checked?'O':'X'):check.checked;data[key]=value;save(key,value)};
   const text=document.createElement('span');text.textContent=label;wrap.append(check,text);bodyChecks.append(wrap);
  });
+ const posture=field(bodyFields,'postureCorrectionCount','자세 교정 횟수','number',{min:0,step:1,placeholder:'0'});posture.setAttribute('aria-label','자세를 인지하고 바르게 고쳐 앉은 횟수');
  field(body,'bodyState','몸 상태 메모','textarea',{placeholder:'피로, 컨디션 등'});
  const mood=section('mood','기분');
  const updateMoodHeader=()=>{const v=getHeaderScore('moodScore');setHeaderScore('mood',v===null?'—':v+' / 10점')};
@@ -1683,4 +1684,12 @@ document.addEventListener('DOMContentLoaded',()=>{render();const target=document
 #calendar .calendar-food-compact-row .calendar-food-meal-score{text-align:center!important}
 #calendar .calendar-food-night-row{border-top:1px solid #e4e8ed!important;padding-top:6px!important}
 @media(max-width:780px){#calendar .calendar-food-compact-row{grid-template-columns:48px 42px 75px repeat(6,42px) 52px!important;width:max-content!important;min-width:0!important}#calendar .calendar-health-section{overflow-x:auto!important}}
+</style><style id="dev-remove-all-info-and-numeric-scores">
+#calendar .calendar-food-help-icon,#calendar .calendar-sleep-duration-help{display:none!important}
+#calendar .calendar-sleep-number-row input{width:100%!important;max-width:90px!important;min-height:28px!important;font-size:12px!important;text-align:center!important}
+#calendar .calendar-sleep-number-row{display:flex!important;align-items:center!important;gap:8px!important}
+#calendar .calendar-sleep-number-row>span{min-width:48px!important}
+#calendar .calendar-body-three-inline{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+#calendar .calendar-food-compact-row select{font-variant-numeric:tabular-nums!important}
+@media(max-width:680px){#calendar .calendar-body-three-inline{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 </style></body></html>
