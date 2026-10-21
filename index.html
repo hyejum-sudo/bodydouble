@@ -1744,4 +1744,17 @@ html:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]),body:has(#calend
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid{grid-column:1!important;grid-row:1!important;display:block!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:scroll!important;overflow-x:auto!important;scrollbar-width:thin!important;overscroll-behavior:contain!important}
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){grid-column:2!important;grid-row:1!important;display:block!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-width:thin!important;overscroll-behavior:contain!important;position:relative!important;top:auto!important}
 }
+</style><style id="day-three-scroll-restore-v2">
+@media(min-width:851px){
+body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]){overflow:hidden!important}
+#calendar:not([hidden]){min-height:0!important;overflow:hidden!important}
+#calendar:not([hidden]) .calendar-app-shell{height:100%!important;min-height:0!important;overflow:hidden!important}
+#calendar:not([hidden]) .calendar-sidebar{overflow-y:auto!important;scrollbar-width:auto!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{display:flex!important;flex-direction:row!important;min-height:0!important;overflow:hidden!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid{flex:1 1 50%!important;width:50%!important;min-width:0!important;min-height:0!important;height:100%!important;overflow-y:scroll!important;overflow-x:auto!important;scrollbar-width:auto!important;display:block!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){flex:1 1 50%!important;width:50%!important;min-width:0!important;min-height:0!important;height:100%!important;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-width:auto!important;display:block!important;position:relative!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid::-webkit-scrollbar,
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix::-webkit-scrollbar,
+#calendar:not([hidden]) .calendar-sidebar::-webkit-scrollbar{display:block!important;width:9px!important}
+}
 </style></body></html>
