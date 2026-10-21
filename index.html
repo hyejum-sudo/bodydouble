@@ -599,24 +599,23 @@ function renderCalendarWellness(){
  buttonChoice(exerciseRow,'exerciseDone','여부',['O','X']);
 
  const exerciseTypeField=field(exerciseRow,'exerciseType','종류','text',{placeholder:'요가/헬스'});
- const exerciseDurationField=field(exerciseRow,'exerciseDuration','시간 (분)','number',{min:0,max:1440,step:1,placeholder:'예: 60'});
+ const exerciseStartField=field(exerciseRow,'exerciseStart','시작','time',{});const exerciseEndField=field(exerciseRow,'exerciseEnd','종료','time',{});const exerciseDurationField={disabled:false};
  const exerciseAreaField=field(exerciseRow,'exerciseArea','부위','text',{placeholder:'하체/코어'});
  const exerciseIntensityField=field(exerciseRow,'exerciseIntensityScore','강도 (0~10)','number',{min:0,max:10,step:1,placeholder:'0~10'});
  const alternativeActivity=field(exercise,'exerciseAlternative','운동 대신한 활동','text',{placeholder:'휴식, 산책, 정리, 독서 등'});alternativeActivity.closest('.calendar-health-field').classList.add('exercise-alternative-row');
- const exerciseMoodsRow=document.createElement('div');exerciseMoodsRow.className='calendar-exercise-feelings';exercise.append(exerciseMoodsRow);const beforeMoodSlot=document.createElement('div');beforeMoodSlot.className='calendar-exercise-mood-slot';const afterMoodSlot=document.createElement('div');afterMoodSlot.className='calendar-exercise-mood-slot';exerciseMoodsRow.append(beforeMoodSlot,afterMoodSlot);
- const exerciseMoodStars=(key,label)=>{
-  const wrap=document.createElement('div');wrap.className='calendar-health-field calendar-exercise-mood-stars';
-  const heading=document.createElement('div');heading.className='calendar-exercise-mood-heading';const title=document.createElement('span');title.textContent=label;const value=document.createElement('output');heading.append(title,value);wrap.append(heading);
-  const stars=document.createElement('div');stars.className='calendar-sleep-stars calendar-exercise-mood-star-buttons';stars.setAttribute('role','group');stars.setAttribute('aria-label',label+' 별점');
-  const legacy={'매우 나쁨':2,'나쁨':4,'보통':6,'좋음':8,'매우 좋음':10};if(legacy[data[key]]){data[key]=String(legacy[data[key]]);save(key,data[key])}else if(data[key]&&!localStorage.getItem('moyo-exercise-mood-10-v1-'+key)){data[key]=String(Math.min(10,Number(data[key])*2));save(key,data[key])}localStorage.setItem('moyo-exercise-mood-10-v1-'+key,'1')
-  const paint=()=>{const n=Number(data[key])||0;value.textContent=n+' / 10점';stars.querySelectorAll('button').forEach((btn,i)=>{btn.classList.toggle('filled',i<n);btn.setAttribute('aria-pressed',String(i+1===n))})};
-  for(let n=1;n<=10;n++){const btn=document.createElement('button');btn.type='button';btn.className='calendar-sleep-halfstar';btn.textContent='★';btn.title=n+' / 10점';btn.setAttribute('aria-label',n+'점');btn.onclick=()=>{data[key]=Number(data[key])===n?'':String(n);save(key,data[key]);paint()};stars.append(btn)}
-  wrap.append(stars);(key==='exerciseMoodBefore'?beforeMoodSlot:afterMoodSlot).append(wrap);paint()
+ const exerciseMoodsRow=document.createElement('div');exerciseMoodsRow.className='calendar-exercise-feelings';exerciseRow.append(exerciseMoodsRow);const beforeMoodSlot=document.createElement('div');beforeMoodSlot.className='calendar-exercise-mood-slot';const afterMoodSlot=document.createElement('div');afterMoodSlot.className='calendar-exercise-mood-slot';exerciseMoodsRow.append(beforeMoodSlot,afterMoodSlot);
+ const exerciseMoodNumber=(key,label,slot)=>{
+  const wrap=document.createElement('label');wrap.className='calendar-health-field calendar-exercise-mood-number';
+  const caption=document.createElement('span');caption.textContent=label;wrap.append(caption);
+  const input=document.createElement('input');input.type='number';input.min='0';input.max='10';input.step='1';input.placeholder='0~10';input.setAttribute('aria-label',label+' 10점 만점');
+  const legacy={'매우 나쁨':2,'나쁨':4,'보통':6,'좋음':8,'매우 좋음':10};if(legacy[data[key]]){data[key]=String(legacy[data[key]]);save(key,data[key])}
+  input.value=data[key]??'';input.onchange=()=>{const v=input.value===''?'':String(Math.max(0,Math.min(10,Math.round(Number(input.value)||0))));input.value=v;data[key]=v;save(key,v)};
+  wrap.append(input);slot.append(wrap);return input
  };
- exerciseMoodStars('exerciseMoodBefore','운동 전 기분');
- exerciseMoodStars('exerciseMoodAfter','운동 후 기분');
- const exerciseMemo=field(exerciseMoodsRow,'exerciseMemo','교정 · 추가 메모','text',{placeholder:'다음에 교정하거나 추가할 것'});exerciseMemo.classList.add('calendar-exercise-short-memo');
- const updateExercise=()=>{const skipped=data.exerciseDone==='X';exercise.classList.toggle('exercise-rest-day',skipped);exerciseRow.classList.toggle('is-exercise-skipped',skipped);alternativeActivity.closest('.calendar-health-field').style.display=skipped?'flex':'none';[exerciseTypeField,exerciseAreaField,exerciseDurationField,exerciseIntensityField].forEach(el=>{el.disabled=skipped});exerciseMoodsRow.style.display=skipped?'none':'grid';setHeaderScore('exercise',skipped?'0 / 10점':data.exerciseDone==='O'?'O':'—')};updateExercise()
+ const beforeMoodInput=exerciseMoodNumber('exerciseMoodBefore','전기분',beforeMoodSlot);
+ const afterMoodInput=exerciseMoodNumber('exerciseMoodAfter','후기분',afterMoodSlot);
+ const exerciseMemo=field(exercise,'exerciseMemo','다음 운동 메모','text',{placeholder:'교정하거나 추가할 점'});exerciseMemo.classList.add('calendar-exercise-short-memo');
+ const updateExercise=()=>{const skipped=data.exerciseDone==='X';exercise.classList.toggle('exercise-rest-day',skipped);exerciseRow.classList.toggle('is-exercise-skipped',skipped);alternativeActivity.closest('.calendar-health-field').style.display=skipped?'flex':'none';[exerciseTypeField,exerciseAreaField,exerciseStartField,exerciseEndField,exerciseIntensityField,beforeMoodInput,afterMoodInput].forEach(el=>{el.disabled=skipped});exerciseMoodsRow.style.display=skipped?'none':'grid';setHeaderScore('exercise',skipped?'0 / 10점':data.exerciseDone==='O'?'O':'—')};updateExercise()
 }
 function renderCalendarTimeRecords(){
  const root=id('calendarDayTimeRecordGrid');if(!root)return;root.replaceChildren();
@@ -1626,4 +1625,16 @@ dialog#editDialog,dialog#routineDialog,dialog#taskFocusDialog,#calendar #calenda
 (function(){const key='moyo-dday-items-v1';const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return []}};function render(){const root=document.getElementById('calendarDdayItems'),btn=document.getElementById('calendarDdayAdd');if(!root||!btn)return;root.replaceChildren();const view=document.getElementById('unifiedView')?.value;const area=document.getElementById('calendarDdayArea');if(area)area.hidden=view!=='day';if(view!=='day')return;const base=document.getElementById('unifiedDate')?.value||new Date().toLocaleDateString('sv-SE');const today=new Date(base+'T12:00:00');read().forEach((item,index)=>{const day=new Date(item.date+'T12:00:00');const delta=Math.round((day-today)/86400000);const chip=document.createElement('button');chip.type='button';chip.className='calendar-dday-chip';chip.textContent=item.name+' '+(delta===0?'D-day':delta>0?'D-'+delta:'D+'+Math.abs(delta));chip.title='클릭하여 수정 또는 삭제';chip.onclick=()=>{const name=prompt('디데이 이름 (비우면 삭제)',item.name);if(name===null)return;const arr=read();if(!name.trim()){if(confirm('디데이를 삭제할까요?'))arr.splice(index,1)}else{const date=prompt('목표 날짜 (YYYY-MM-DD)',item.date);if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(new Date(date+'T12:00:00').getTime())){alert('날짜 형식이 올바르지 않습니다.');return}arr[index]={name:name.trim(),date}}localStorage.setItem(key,JSON.stringify(arr));render()};root.append(chip)});btn.onclick=()=>{const name=prompt('디데이 이름');if(!name?.trim())return;const date=prompt('목표 날짜 (YYYY-MM-DD)',base);if(!date)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(new Date(date+'T12:00:00').getTime())){alert('날짜 형식이 올바르지 않습니다.');return}localStorage.setItem(key,JSON.stringify([...read(),{name:name.trim(),date}]));render()}}
 document.addEventListener('DOMContentLoaded',()=>{render();const target=document.getElementById('calendarYearMonth');if(target)new MutationObserver(render).observe(target,{childList:true,characterData:true,subtree:true});document.getElementById('unifiedDate')?.addEventListener('change',render);document.querySelectorAll('[data-calendar-view]').forEach(b=>b.addEventListener('click',()=>setTimeout(render,0)))});
 })();
-</script></body></html>
+</script><style id="dev-compact-exercise-8-fields">
+.nav-brand{font-size:13px!important;letter-spacing:-.5px!important;line-height:1.15!important}
+#calendar .calendar-exercise-one-row{display:grid!important;grid-template-columns:44px minmax(0,1.25fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.1fr) minmax(0,.75fr) minmax(0,.7fr) minmax(0,.7fr)!important;gap:4px!important;align-items:end!important}
+#calendar .calendar-exercise-one-row>.calendar-health-field{min-width:0!important;width:100%!important}
+#calendar .calendar-exercise-one-row>.calendar-health-field>span,#calendar .calendar-exercise-mood-number>span{font-size:10px!important;white-space:nowrap!important}
+#calendar .calendar-exercise-one-row input,#calendar .calendar-exercise-one-row select{box-sizing:border-box!important;min-width:0!important;width:100%!important;padding:4px 3px!important;height:29px!important;font-size:11px!important}
+#calendar .calendar-exercise-one-row input[type=time]{font-size:10px!important;padding:2px 1px!important}
+#calendar .calendar-exercise-feelings{display:contents!important}
+#calendar .calendar-exercise-mood-slot{min-width:0!important}
+#calendar .calendar-exercise-mood-number{display:flex!important;flex-direction:column!important;gap:3px!important;min-width:0!important}
+#calendar .calendar-exercise-short-memo{width:100%!important;max-width:100%!important}
+@media(max-width:700px){#calendar .calendar-exercise-one-row{gap:2px!important;overflow-x:auto!important;grid-template-columns:42px 85px 78px 78px 76px 56px 55px 55px!important}#calendar .calendar-exercise-one-row input{font-size:10px!important}}
+</style></body></html>
