@@ -1724,4 +1724,15 @@ body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"])>main{flex:1 1 au
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid,
 #calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){height:100%!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;scrollbar-width:thin!important;position:relative!important;top:auto!important}
 }
+</style><style id="dev-three-column-independent-scroll">
+@media(min-width:851px){
+html:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]),body:has(#calendar:not([hidden]) #unifiedGrid[data-view="day"]){height:100%!important;overflow:hidden!important}
+#calendar:not([hidden]) .calendar-app-shell{display:grid!important;grid-template-columns:205px minmax(0,1fr)!important;gap:12px!important;flex:1 1 auto!important;min-height:0!important;height:100%!important;max-height:100%!important;overflow:hidden!important;align-items:stretch!important}
+#calendar:not([hidden]) .calendar-app-shell>.calendar-sidebar{position:relative!important;top:auto!important;height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scrollbar-width:thin!important}
+#calendar:not([hidden]) .calendar-app-shell>.calendar-main-area:has(#unifiedGrid[data-view="day"]){display:flex!important;flex-direction:column!important;min-height:0!important;height:100%!important;max-height:100%!important;overflow:hidden!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.calendar-toolbar{flex:0 0 auto!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{flex:1 1 auto!important;min-height:0!important;height:0!important;max-height:100%!important;overflow:hidden!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:stretch!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid,
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){min-height:0!important;height:100%!important;max-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;scrollbar-width:thin!important;position:relative!important;top:auto!important}
+}
 </style></body></html>
