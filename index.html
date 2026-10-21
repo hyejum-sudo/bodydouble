@@ -579,7 +579,7 @@ function renderCalendarWellness(){
  const thoughtRow=document.createElement('div');thoughtRow.className='calendar-mood-thought-row';mood.append(thoughtRow);
  const thoughtInput=field(thoughtRow,'moodAutomaticThought','자동적 생각','textarea',{rows:2,placeholder:'머릿속에 떠오른 생각'});
  const moodReframe=field(thoughtRow,'moodReframe','전환 한마디','textarea',{rows:2,placeholder:'생각을 수용하고 작은 행동으로 전환'});if(!moodReframe.value){const old=data.moodEvidence||data.moodAcceptance||'';if(old){moodReframe.value=old;data.moodReframe=old;save('moodReframe',old)}}
- const aiHelp=document.createElement('button');aiHelp.type='button';aiHelp.className='calendar-mood-ai-help';aiHelp.textContent='AI로 전환 돕기 ↗';aiHelp.title='입력한 자동적 생각을 바탕으로 ChatGPT에서 전환 문장을 만들어요. 답변은 전환 칸에 직접 붙여넣으세요.';aiHelp.onclick=()=>{const thought=thoughtInput.value.trim();if(!thought){thoughtInput.focus();return}const prompt='ADHD 친화적인 CBT·ACT 코치처럼 다음 자동적 생각에 대해 비판하지 않고 수용하는 한 문장과, 실행 부담을 낮추는 전환 자기대화 한 문장을 한국어로 짧게 작성해줘. 생각: '+thought;window.open('https://chatgpt.com/?q='+encodeURIComponent(prompt),'_blank','noopener,noreferrer')};moodReframe.closest('.calendar-health-field').append(aiHelp);
+ const aiHelp=document.createElement('button');aiHelp.type='button';aiHelp.className='calendar-mood-ai-help';aiHelp.textContent='AI로 전환 돕기 ↗';aiHelp.title='입력한 자동적 생각을 바탕으로 ChatGPT에서 전환 문장을 만들어요. 답변은 전환 칸에 직접 붙여넣으세요.';aiHelp.onclick=()=>{const thought=thoughtInput.value.trim();if(!thought){thoughtInput.focus();return}const prompt='ADHD 친화적인 CBT·ACT 코치처럼 다음 자동적 생각에 대해 비판하지 않고 수용하는 한 문장과, 실행 부담을 낮추는 전환 자기대화 한 문장을 한국어로 짧게 작성해줘. 생각: '+thought;window.open('https://chatgpt.com/?q='+encodeURIComponent(prompt),'_blank','noopener,noreferrer')};const reframeWrap=moodReframe.closest('.calendar-health-field');const reframeHeading=reframeWrap.querySelector('span');if(reframeHeading){const headingRow=document.createElement('div');headingRow.className='calendar-mood-reframe-heading';reframeHeading.before(headingRow);headingRow.append(reframeHeading,aiHelp)}else reframeWrap.prepend(aiHelp);
  const moodTriple=(label,prefix,placeholder)=>{const row=document.createElement('div');row.className='calendar-mood-triple';mood.append(row);const heading=document.createElement('div');heading.className='calendar-mood-triple-title';heading.textContent=label;row.append(heading);const fields=document.createElement('div');fields.className='calendar-mood-triple-inputs';row.append(fields);const examples={moodPraise:['1. 하기 싫어도 시작했다','2. 나를 비난하지 않았다','3. 작은 일 하나 끝냈다'],moodGratitude:['1. 오늘 쉴 곳이 있다','2. 따뜻한 차 한 잔','3. 내 몸이 움직여 줬다'],moodDespite:['1. 불안해도 파일 열기','2. 무기력해도 2분만 하기','3. 완벽하지 않아도 저장하기']};for(let n=1;n<=3;n++)field(fields,prefix+n,'','text',{placeholder:examples[prefix][n-1]})};
  moodTriple('칭찬','moodPraise','작은 시도도 좋아');
  moodTriple('감사','moodGratitude','사소한 것도 괜찮아');
@@ -1702,4 +1702,14 @@ body>header>nav .nav-brand{font-size:11px!important;line-height:1.25!important;l
 #calendar #unifiedGrid.calendar-time-grid[data-view="day"]>.time-date-head{display:none!important}
 #calendar #unifiedGrid.calendar-time-grid[data-view="day"]>.time-ruler{grid-column:1!important;grid-row:1!important}
 #calendar #unifiedGrid.calendar-time-grid[data-view="day"]>.time-day-column{grid-column:2!important;grid-row:1!important}
+</style><style id="dev-independent-scroll-and-inline-ai">
+body>header>nav .nav-brand{font-size:8.8px!important;line-height:1.3!important}
+#calendar .calendar-mood-reframe-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:5px!important;width:100%!important;min-width:0!important}
+#calendar .calendar-mood-reframe-heading>span{font-size:11px!important;white-space:nowrap!important}
+#calendar .calendar-mood-reframe-heading .calendar-mood-ai-help{margin:0!important;padding:3px 6px!important;font-size:10px!important;white-space:nowrap!important;line-height:1.3!important}
+@media(min-width:851px){
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel{height:calc(100dvh - 145px)!important;min-height:420px!important;overflow:hidden!important;align-items:stretch!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#unifiedGrid{height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:auto!important;align-self:stretch!important;overscroll-behavior:contain!important}
+#calendar .calendar-main-area:has(#unifiedGrid[data-view="day"])>.panel>#calendarDayMatrix:not([hidden]){height:100%!important;max-height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;position:relative!important;top:auto!important;align-self:stretch!important;overscroll-behavior:contain!important}
+}
 </style></body></html>
