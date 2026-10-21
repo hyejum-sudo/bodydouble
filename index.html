@@ -563,7 +563,13 @@ function renderCalendarWellness(){
  setHeaderScore('body',data.bodyConditionScore!==undefined&&data.bodyConditionScore!==''?data.bodyConditionScore+' / 10점':'—');
  field(bodyFields,'painArea','통증 부위','text',{placeholder:'예: 왼쪽 어깨'});
  scoreSelect('painLevel','통증 정도',data.painLevel);
- const periodWrap=document.createElement('div');periodWrap.className='calendar-health-field calendar-period-choice';const periodLabel=document.createElement('span');periodLabel.textContent='생리 여부';periodWrap.append(periodLabel);const periodButtons=document.createElement('div');periodButtons.className='calendar-exercise-choice-buttons';periodButtons.setAttribute('role','group');periodButtons.setAttribute('aria-label','생리 여부');const paintPeriod=()=>{const current=data.menstruationStatus||'X';periodButtons.querySelectorAll('button').forEach(btn=>{const on=btn.dataset.value===current;btn.classList.toggle('selected',on);btn.setAttribute('aria-pressed',String(on))})};[['O','생리 중'],['△','소량·시작/종료 무렵'],['X','생리하지 않음']].forEach(([value,label])=>{const btn=document.createElement('button');btn.type='button';btn.textContent=value;btn.dataset.value=value;btn.title=label;btn.setAttribute('aria-label',label);btn.onclick=()=>{data.menstruationStatus=value;save('menstruationStatus',value);paintPeriod()};periodButtons.append(btn)});periodWrap.append(periodButtons);bodyFields.append(periodWrap);paintPeriod();
+ const bodyChecks=document.createElement('div');bodyChecks.className='calendar-body-check-row';body.append(bodyChecks);
+ [['menstruationStatus','생리'],['toiletDone','화장실']].forEach(([key,label])=>{
+  const wrap=document.createElement('label');wrap.className='calendar-body-check';
+  const check=document.createElement('input');check.type='checkbox';check.checked=key==='menstruationStatus'?data[key]==='O':data[key]===true||data[key]==='true';
+  check.onchange=()=>{const value=key==='menstruationStatus'?(check.checked?'O':'X'):check.checked;data[key]=value;save(key,value)};
+  const text=document.createElement('span');text.textContent=label;wrap.append(check,text);bodyChecks.append(wrap);
+ });
  field(body,'bodyState','몸 상태 메모','textarea',{placeholder:'피로, 컨디션 등'});
  const mood=section('mood','기분');
  const updateMoodHeader=()=>{const v=getHeaderScore('moodScore');setHeaderScore('mood',v===null?'—':v+' / 10점')};
@@ -1587,4 +1593,12 @@ dialog form{min-width:0!important}
 #quickDoneFloat{left:12px!important;right:12px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;width:auto!important;max-height:65dvh!important}
 dialog#editDialog,dialog#routineDialog,dialog#taskFocusDialog,#calendar #calendarEntryDialog{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;padding:12px!important}
 }
+</style><style id="dev-body-check-row">
+#calendar #calendarDayMatrix .calendar-body-three-inline{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr) minmax(0,.9fr)!important;gap:5px!important;align-items:end!important}
+#calendar #calendarDayMatrix .calendar-body-three-inline>.calendar-health-field{min-width:0!important;width:100%!important}
+#calendar #calendarDayMatrix .calendar-body-three-inline input,#calendar #calendarDayMatrix .calendar-body-three-inline select{width:100%!important;min-width:0!important}
+#calendar #calendarDayMatrix .calendar-body-check-row{display:flex!important;align-items:center!important;gap:16px!important;margin:5px 0 3px!important;flex-wrap:wrap!important}
+#calendar #calendarDayMatrix .calendar-body-check{display:inline-flex!important;align-items:center!important;gap:5px!important;font-size:12px!important;cursor:pointer!important}
+#calendar #calendarDayMatrix .calendar-body-check input{width:15px!important;height:15px!important;accent-color:#52896c!important}
+@media(max-width:420px){#calendar #calendarDayMatrix .calendar-body-three-inline{gap:3px!important}#calendar #calendarDayMatrix .calendar-body-three-inline>.calendar-health-field{font-size:10px!important}}
 </style></body></html>
