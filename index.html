@@ -1793,7 +1793,7 @@ report();
 function report(){
 const root=$('lifeReportOutput');if(!root)return;
 const d=$('lifeReportDate').value||new Date().toLocaleDateString('en-CA'),quarter=$('lifeReportPeriod').value==='quarter',y=Number(d.slice(0,4)),m=Number(d.slice(5,7));const start=quarter?y+'-'+String(Math.floor((m-1)/3)*3+1).padStart(2,'0')+'-01':d.slice(0,7)+'-01';const end=quarter?new Date(y,Math.floor((m-1)/3)*3+3,1).toLocaleDateString('en-CA'):new Date(y,m,1).toLocaleDateString('en-CA');
-let items=[];try{const keys=Object.keys(localStorage);for(const k of keys){if(!k.includes('moyo')||!k.includes('data'))continue;const v=JSON.parse(localStorage.getItem(k)||'{}');if(Array.isArray(v.items)){items=v.items;break}}}catch(e){}
+let items=[];try{const v=JSON.parse(localStorage.getItem('moyo-dashboard-v1')||'{}');items=Array.isArray(v.items)?v.items:[]}catch(e){}
 if(!items.length){try{const candidates=Object.keys(localStorage).map(k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}});items=candidates.find(x=>x&&Array.isArray(x.items)&&x.items.some(z=>z.type))?.items||[]}catch(e){}}
 const selected=items.filter(x=>{const dt=x.displayDate||x.date||x.dueDate||'';return dt>=start&&dt<end});
 const mins=t=>{if(!/^\d\d:\d\d$/.test(t||''))return null;const a=t.split(':').map(Number);return a[0]*60+a[1]};
