@@ -456,7 +456,7 @@ function renderCalendarDayMatrix(){
   const quad=document.createElement('div');quad.className='calendar-day-quad quad';quad.dataset.quadrant=q;quad.classList.toggle('selected',selectedDayQuadrant===q);quad.hidden=selectedDayQuadrant!==null&&selectedDayQuadrant!==q;
   const heading=document.createElement('div');heading.className='calendar-day-quad-heading';
   const title=document.createElement('h4');title.textContent=name+' ('+data.filter(x=>x.type==='task'&&Number(x.quadrant||0)===q&&!x.completed).length+')';title.title='클릭하면 이 4분면만 표시 · 다시 클릭하면 전체 표시';title.tabIndex=0;title.setAttribute('role','button');const toggleQuadrant=()=>{selectedDayQuadrant=selectedDayQuadrant===q?null:q;renderCalendarDayMatrix()};title.onclick=toggleQuadrant;title.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleQuadrant()}};
-  const add=document.createElement('button');add.type='button';add.textContent='＋';add.title='할 일 추가';heading.append(title,add);quad.append(heading);
+  const add=document.createElement('button');add.type='button';add.textContent='＋';add.title='할 일 추가';const quick=document.createElement('button');quick.type='button';quick.className='quad-quick-done';quick.textContent='한 일 기록';quick.title='작게 해낸 일들을 빠르게 기록';quick.onclick=()=>openQuickDone(q);heading.append(title,quick,add);quad.append(heading);
   const input=document.createElement('input');input.className='calendar-quad-add-input';input.placeholder='할 일 추가 · Enter';
   add.onclick=()=>input.focus();
   input.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing&&input.value.trim()){const d=read();d.items.push({id:uid(),type:'task',title:input.value.trim(),quadrant:q,minutes:25,completed:false,createdAt:stamp(),updatedAt:stamp()});write(d);paintAll();box.querySelectorAll('.calendar-quad-add-input')[q]?.focus()}};
@@ -470,6 +470,13 @@ function renderCalendarDayMatrix(){
   quad.append(list);box.append(quad)
  })
 }
+const quickDoneKey='moyo-quick-done-v1';let quickDoneQuadrant=0;
+function readQuickDone(){try{return JSON.parse(localStorage.getItem(quickDoneKey)||'{}')||{}}catch{return {}}}
+function saveQuickDone(data){localStorage.setItem(quickDoneKey,JSON.stringify(data))}
+function openQuickDone(q){quickDoneQuadrant=q;const panel=id('quickDoneFloat');panel.hidden=false;renderQuickDone();id('quickDoneInput').focus()}
+function renderQuickDone(){const panel=id('quickDoneFloat');if(!panel)return;const key=chosen+'|'+quickDoneQuadrant,items=readQuickDone()[key]||[],box=id('quickDoneList');box.replaceChildren();items.forEach((item,i)=>{const row=document.createElement('div');row.className='quick-done-row';const check=document.createElement('span');check.textContent='✓';const input=document.createElement('input');input.value=item;input.setAttribute('aria-label','한 일 수정');input.onchange=()=>{const data=readQuickDone();data[key][i]=input.value.trim();data[key]=data[key].filter(Boolean);saveQuickDone(data);renderQuickDone()};input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();input.blur();id('quickDoneInput').focus()}else if(e.key==='Backspace'&&!input.value){e.preventDefault();const data=readQuickDone();data[key].splice(i,1);saveQuickDone(data);renderQuickDone();id('quickDoneInput').focus()}};row.append(check,input);box.append(row)});id('quickDoneCaption').textContent=chosen+' · '+['긴급·중요','중요·비긴급','긴급·비중요','비긴급·비중요'][quickDoneQuadrant]}
+function initQuickDone(){if(id('quickDoneFloat'))return;const panel=document.createElement('aside');panel.id='quickDoneFloat';panel.hidden=true;panel.innerHTML='<div class="quick-done-head"><strong>✓ 자잘하게 해낸 일</strong><button type="button" id="quickDoneClose" aria-label="닫기">×</button></div><small id="quickDoneCaption"></small><div id="quickDoneList"></div><input id="quickDoneInput" placeholder="한 일 쓰고 Enter ↵" aria-label="한 일 입력"><small>빈 칸에서 Backspace로 마지막 기록 삭제</small>';document.body.append(panel);id('quickDoneClose').onclick=()=>panel.hidden=true;id('quickDoneInput').onkeydown=e=>{const key=chosen+'|'+quickDoneQuadrant;if(e.key==='Enter'&&!e.isComposing){e.preventDefault();const v=e.target.value.trim();if(!v)return;const data=readQuickDone();(data[key]||(data[key]=[])).push(v);saveQuickDone(data);e.target.value='';renderQuickDone()}else if(e.key==='Backspace'&&!e.target.value){const data=readQuickDone();if(data[key]?.length){data[key].pop();saveQuickDone(data);renderQuickDone()}}}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initQuickDone);else initQuickDone();
 const calendarRightOpenSections=new Set(['quadrants']);
 function initCalendarRightAccordions(){
  const panel=id('calendarDayMatrix');if(!panel)return;
@@ -1474,4 +1481,24 @@ body>header>nav .today-sentence input::placeholder{color:#516b60!important;opaci
 #calendar #calendarToolbarFilters{display:none!important}
 body>header>nav #calendarTopControls #unifiedPrev,body>header>nav #calendarTopControls #unifiedNext{font-size:20px!important;font-weight:900!important;color:#175c4e!important;background:#e3f1eb!important;border:1px solid #a6cdbd!important;border-radius:9px!important;box-shadow:0 2px 5px #1a544019!important}
 body>header>nav #calendarTopControls #unifiedToday{margin-left:.3mm!important}
-</style><style id="dev-category-memo-structure">#calendarEntryDialog #entryExtras label[data-kind="memo"]{grid-column:span 1}#calendarEntryDialog .memo-group-manage{font-size:11px;padding:5px 7px;background:#eaf3ee;color:#235a4d}#calendar .calendar-entry-category-head{font-weight:750}</style></body></html>
+</style><style id="dev-category-memo-structure">#calendarEntryDialog #entryExtras label[data-kind="memo"]{grid-column:span 1}#calendarEntryDialog .memo-group-manage{font-size:11px;padding:5px 7px;background:#eaf3ee;color:#235a4d}#calendar .calendar-entry-category-head{font-weight:750}</style><style id="calendar-polish-7">
+#calendar .time-day-column .calendar-now-line{height:0!important;border-top:1px dashed #e7785c!important;background:transparent!important;opacity:.72!important;box-shadow:none!important}
+#calendar .time-day-column .calendar-now-line:before{width:5px!important;height:5px!important;top:-3px!important;left:-2px!important;background:#e7785c!important}
+#calendar .calendar-category-delete{border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;padding:1px 4px!important;color:#84918e!important;font-size:13px!important}
+#calendar .calendar-category-delete:hover{color:#b34f4f!important;background:transparent!important}
+#calendarTopControls #unifiedPrev,#calendarTopControls #unifiedNext,#calendarTopControls #unifiedToday{height:30px!important;min-height:30px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;vertical-align:middle!important;border-radius:7px!important;border:1px solid #a6cdbd!important;background:#e3f1eb!important;box-sizing:border-box!important;line-height:1!important}
+#calendarTopControls #unifiedPrev,#calendarTopControls #unifiedNext{width:32px!important;padding:0!important;font-size:20px!important}
+#calendarTopControls #unifiedToday{padding:0 11px!important;font-size:12px!important;font-weight:750!important}
+#calendar .calendar-mini-grid>button.selected,#calendar .calendar-mini-grid>button.today{background:transparent!important;box-shadow:none!important;outline:none!important}
+#calendar #calendarSidebarFilters .calendar-main-filters label span{font-size:11px!important}
+#calendar .calendar-day-quad-heading .quad-quick-done{margin-left:auto!important;font-size:10px!important;font-weight:650!important;padding:3px 6px!important;background:#eef6f1!important;color:#397361!important;border:0!important;border-radius:6px!important}
+#calendar .calendar-day-quad-heading button[title="할 일 추가"]{font-size:12px!important;min-width:19px!important;min-height:19px!important}
+#quickDoneFloat[hidden]{display:none!important}
+#quickDoneFloat{position:fixed;right:18px;bottom:18px;z-index:3000;width:min(325px,calc(100vw - 36px));max-height:65vh;overflow:auto;background:#fff;border:1px solid #cddfd5;border-radius:14px;padding:12px;box-shadow:0 12px 35px #1b3f3033;font-family:system-ui,'Noto Sans KR',sans-serif}
+#quickDoneFloat .quick-done-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#quickDoneFloat .quick-done-head button{border:0;background:transparent;font-size:18px}
+#quickDoneFloat small{display:block;color:#73827a;font-size:10px;margin:5px 0}
+#quickDoneFloat .quick-done-row{display:flex;gap:7px;align-items:center;margin:3px 0}
+#quickDoneFloat .quick-done-row span{color:#429270}
+#quickDoneFloat input{box-sizing:border-box;width:100%;padding:7px!important;border:1px solid #e2eae5;border-radius:6px;font-size:12px}
+</style></body></html>
