@@ -1882,4 +1882,27 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #lifeSystem .ls-icon-button,#lifeSystem .ls-nested-fold{width:18px!important;min-width:18px!important}
 #lifeSystem .ls-task-table-row td:first-child .ls-task-title{width:calc(100% - 22px)!important}
 @media(max-width:800px){#lifeSystem .ls-task-table{min-width:540px!important}}
-</style><style id="life-inline-period-20261022">#lifeSystem .ls-inline-period{display:flex;align-items:center;gap:2px;flex-wrap:wrap;min-width:0}#lifeSystem .ls-inline-period>input[type=number]{width:34px!important;min-width:0!important;height:22px!important;padding:1px 2px!important;text-align:center;font-size:10px!important}#lifeSystem .ls-inline-period>select{width:51px!important;min-width:0!important;height:22px!important;padding:1px!important;font-size:10px!important}#lifeSystem .ls-inline-period.is-disabled{opacity:.45}#lifeSystem .ls-inline-weekdays{display:flex;gap:1px;width:100%;flex-wrap:nowrap}#lifeSystem .ls-weekday-chip{font-size:9px!important;min-width:17px!important;height:19px!important;padding:0!important;border-radius:3px!important}#lifeSystem .ls-weekday-chip.selected{background:#386b96!important;color:white!important}#lifeSystem .ls-task-table th:nth-child(3){width:26%!important}#lifeSystem .ls-task-table th:first-child{width:26%!important}</style></body></html>
+</style><style id="life-inline-period-20261022">#lifeSystem .ls-inline-period{display:flex;align-items:center;gap:2px;flex-wrap:wrap;min-width:0}#lifeSystem .ls-inline-period>input[type=number]{width:34px!important;min-width:0!important;height:22px!important;padding:1px 2px!important;text-align:center;font-size:10px!important}#lifeSystem .ls-inline-period>select{width:51px!important;min-width:0!important;height:22px!important;padding:1px!important;font-size:10px!important}#lifeSystem .ls-inline-period.is-disabled{opacity:.45}#lifeSystem .ls-inline-weekdays{display:flex;gap:1px;width:100%;flex-wrap:nowrap}#lifeSystem .ls-weekday-chip{font-size:9px!important;min-width:17px!important;height:19px!important;padding:0!important;border-radius:3px!important}#lifeSystem .ls-weekday-chip.selected{background:#386b96!important;color:white!important}#lifeSystem .ls-task-table th:nth-child(3){width:26%!important}#lifeSystem .ls-task-table th:first-child{width:26%!important}</style><style id="life-domain-card-grid-20261022">
+/* 분야별 독립 카드: 넓은 화면에서는 한 행에 두 분야 */
+#lifeSystem{max-width:none!important;width:100%!important}
+#lifeSystem .ls-nested-root{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;align-items:start!important;width:100%!important}
+#lifeSystem .ls-nested-root>.ls-nested-domain{min-width:0!important;width:100%!important;margin:0!important;padding:7px!important;border:1px solid #dbe3e8!important;border-radius:9px!important;background:var(--surface,#fff)!important;box-sizing:border-box!important}
+#lifeSystem .ls-nested-root>.ls-nested-domain>.ls-nested-line{min-height:28px!important;border-bottom:1px solid #e5ebee!important;margin-bottom:4px!important;padding-bottom:4px!important}
+#lifeSystem .ls-nested-root>.ls-nested-domain>.ls-nested-line .ls-nested-name{font-weight:700!important;max-width:155px!important}
+#lifeSystem .ls-nested-root>.ls-nested-domain>.ls-nested-children{margin-left:3px!important;padding-left:3px!important}
+#lifeSystem .ls-nested-root .ls-task-table{width:100%!important;max-width:none!important;min-width:0!important;table-layout:fixed!important}
+#lifeSystem .ls-nested-root .ls-task-table th:first-child{width:24%!important}
+#lifeSystem .ls-nested-root .ls-task-table th:nth-child(2){width:7%!important}
+#lifeSystem .ls-nested-root .ls-task-table th:nth-child(3){width:30%!important}
+#lifeSystem .ls-nested-root .ls-task-table th:nth-child(4){width:19%!important}
+#lifeSystem .ls-nested-root .ls-task-table th:nth-child(5),#lifeSystem .ls-nested-root .ls-task-table th:nth-child(6){width:7%!important}
+#lifeSystem .ls-nested-root .ls-task-table th:last-child{width:6%!important}
+#lifeSystem .ls-nested-root .ls-task-table td,#lifeSystem .ls-nested-root .ls-task-table th{padding-left:1px!important;padding-right:1px!important}
+#lifeSystem .ls-nested-root .ls-task-table .ls-task-title{font-size:10px!important}
+#lifeSystem .ls-nested-root .ls-task-table input[type=date]{font-size:9px!important;letter-spacing:-.7px!important}
+#lifeSystem .ls-nested-root .ls-inline-period{gap:1px!important}
+#lifeSystem .ls-nested-root .ls-inline-period>input[type=number]{width:27px!important}
+#lifeSystem .ls-nested-root .ls-inline-period>select{width:42px!important}
+#lifeSystem .ls-nested-root .ls-weekday-chip{min-width:14px!important;width:14px!important;font-size:8px!important}
+@media(max-width:1050px){#lifeSystem .ls-nested-root{grid-template-columns:1fr!important}#lifeSystem .ls-nested-root>.ls-nested-domain{max-width:720px!important}}
+</style></body></html>
