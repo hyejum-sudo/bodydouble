@@ -2027,4 +2027,48 @@ const early=document.getElementById('entryEarly')?.closest('label');if(early)ear
 #calendar .calendar-body-three-inline>.calendar-body-check-row>.calendar-body-check{min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;height:29px!important;white-space:nowrap!important;font-size:11px!important;margin:0!important}
 #calendar .calendar-body-three-inline>.calendar-body-check-row>.calendar-body-check input{width:14px!important;height:14px!important}
 @media(max-width:780px){#calendar .calendar-body-three-inline{min-width:660px!important}#calendar .calendar-health-section:has(.calendar-body-three-inline){overflow-x:auto!important}}
-</style></body></html>
+</style><style id="new-entry-approved-layout-20261027">
+#calendarEntryDialog{width:min(96vw,760px)!important}
+#calendarEntryDialog #unifiedDateTitle{font-size:16px!important}
+#calendarEntryDialog #entryTitleAndCalendar{display:grid!important;grid-template-columns:minmax(170px,2fr) minmax(100px,1fr) minmax(120px,1.25fr)!important;gap:6px!important;align-items:end!important}
+#calendarEntryDialog #entryTitleAndCalendar .calendar-title-line{min-width:0!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:3px!important}
+#calendarEntryDialog #entryTitleAndCalendar .calendar-title-line>span{font-size:11px!important}
+#calendarEntryDialog .entry-life-select{display:flex;flex-direction:column;gap:3px;min-width:0;font-size:11px;font-weight:600}
+#calendarEntryDialog .entry-life-select select{width:100%;height:30px;min-width:0;padding:3px 5px;font-size:12px;border:1px solid #dce2e8;border-radius:6px;background:#fff;color:#27344a}
+#calendarEntryDialog #entryTitleAndCalendar .calendar-life-category{display:none!important}
+#calendarEntryDialog .calendar-record-fields{display:grid!important;grid-template-columns:minmax(130px,1.45fr) minmax(94px,1fr) minmax(94px,1fr) minmax(96px,1fr)!important;gap:6px!important;align-items:end!important}
+#calendarEntryDialog .calendar-record-fields>input[type=date]{width:100%!important;min-width:0!important}
+#calendarEntryDialog .calendar-record-fields>.calendar-event-time{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:3px!important;font-size:11px!important}
+#calendarEntryDialog .calendar-record-fields>.calendar-event-time input{width:100%!important;min-width:0!important}
+#calendarEntryDialog .calendar-record-fields>.calendar-extra-controls{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:3px!important}
+#calendarEntryDialog .calendar-record-fields>.calendar-extra-controls>label{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:3px!important}
+#calendarEntryDialog #calendarEntryRepeat{width:100%!important;min-width:0!important}
+#calendarEntryDialog .entry-kind-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;background:#f1f4f7;border-radius:9px;padding:3px}
+#calendarEntryDialog .entry-kind-tabs button{border:0;background:transparent;padding:7px 5px;border-radius:7px;font-size:12px;font-weight:600;color:#64748b;cursor:pointer}
+#calendarEntryDialog .entry-kind-tabs button.active{background:#fff;color:#2563eb;box-shadow:0 1px 3px #0002}
+#calendarEntryDialog .calendar-input-heading>#calendarEntryKind{display:none!important}
+@media(max-width:540px){#calendarEntryDialog #entryTitleAndCalendar{grid-template-columns:minmax(125px,2fr) minmax(80px,1fr) minmax(95px,1.2fr)!important}#calendarEntryDialog .calendar-record-fields{grid-template-columns:minmax(115px,1.4fr) repeat(3,minmax(75px,1fr))!important;flex-wrap:nowrap!important}#calendarEntryDialog .calendar-record-panel{overflow-x:auto}}
+</style>
+<script id="new-entry-approved-layout-script-20261027">(function(){
+function init(){
+const dialog=document.getElementById('calendarEntryDialog'),panel=dialog?.querySelector('.calendar-record-panel'),titleRow=dialog?.querySelector('#entryTitleAndCalendar'),kind=document.getElementById('calendarEntryKind'),category=document.getElementById('calendarEntryCategory');
+if(!dialog||!panel||!titleRow||!kind||!category)return;
+const heading=document.getElementById('unifiedDateTitle');if(heading)heading.textContent='새 항목 입력';
+const types=[['task','할 일'],['event','일정'],['memo','메모'],['diary','일기']];
+let tabs=dialog.querySelector('.entry-kind-tabs');if(!tabs){tabs=document.createElement('div');tabs.className='entry-kind-tabs';panel.querySelector('.calendar-input-heading')?.after(tabs);types.forEach(([value,label])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.dataset.kind=value;b.onclick=()=>{kind.value=value;kind.dispatchEvent(new Event('change',{bubbles:true}));refreshTabs()};tabs.append(b)})}
+function refreshTabs(){tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.kind===kind.value))}
+kind.addEventListener('change',refreshTabs);refreshTabs();
+const domainWrap=document.createElement('label'),calendarWrap=document.createElement('label');domainWrap.className=calendarWrap.className='entry-life-select';domainWrap.textContent='삶의 분야';calendarWrap.textContent='캘린더';
+const domainSelect=document.createElement('select'),calendarSelect=document.createElement('select');domainSelect.id='entryLifeDomainSelect';calendarSelect.id='entryLifeCalendarSelect';domainWrap.append(domainSelect);calendarWrap.append(calendarSelect);titleRow.append(domainWrap,calendarWrap);
+const read=()=>{try{return JSON.parse(localStorage.getItem('moyo-life-system-v1')||'[]')}catch{return []}};
+function option(sel,value,label){const o=document.createElement('option');o.value=value;o.textContent=label;sel.append(o)}
+function build(selected){const domains=read();domainSelect.replaceChildren();domains.forEach(d=>option(domainSelect,d.id,d.name));const matched=domains.find(d=>(d.groups||[]).some(g=>g.name===selected))||domains.find(d=>d.name===selected)||domains[0];if(matched)domainSelect.value=matched.id;fillCalendar(selected)}
+function fillCalendar(selected){const d=read().find(d=>d.id===domainSelect.value);calendarSelect.replaceChildren();option(calendarSelect,'기본','기본');if(d){option(calendarSelect,d.name,d.name);(d.groups||[]).forEach(g=>option(calendarSelect,g.name,g.name))}calendarSelect.value=[...calendarSelect.options].some(o=>o.value===selected)?selected:(d?.groups?.[0]?.name||d?.name||'기본');sync()}
+function sync(){const value=calendarSelect.value||'기본';category.value=value;window.setCalendarLifeSelection?.(value)}
+domainSelect.onchange=()=>fillCalendar(null);calendarSelect.onchange=sync;
+const picker=document.getElementById('calendarLifePick');if(picker)new MutationObserver(()=>{const value=window.getCalendarLifeSelection?.()||category.value;if(value&&value!==calendarSelect.value)build(value)}).observe(picker,{childList:true,characterData:true,subtree:true});
+dialog.addEventListener('close',()=>{});new MutationObserver(()=>{if(dialog.open){build(window.getCalendarLifeSelection?.()||category.value);refreshTabs();if(heading)heading.textContent='새 항목 입력'}}).observe(dialog,{attributes:true,attributeFilter:['open']});
+build(window.getCalendarLifeSelection?.()||category.value);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();</script></body></html>
