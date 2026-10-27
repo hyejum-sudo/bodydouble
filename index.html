@@ -1810,7 +1810,7 @@ const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch{return
 const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const id=()=> 'ls-'+Math.random().toString(36).slice(2)+Date.now().toString(36);
 const initial=()=>seed.map(([name,gs])=>({id:id(),name,groups:gs.map(([name,ts])=>({id:id(),name,tasks:ts.map(([title,unit,every])=>({id:id(),title,unit,every,active:false,start:'',last:'',time:'09:00'}))}))}));
-let domains=get(KEY,null)||initial(),selected=0,expanded=new Set(domains.map(d=>d.id)),visible=get(VIS,{});
+let domains=get(KEY,null)||initial();const domainOrder=['신체','생활','정서','성장','경제','관계','충만','기본'];domains.sort((a,b)=>{const i=domainOrder.indexOf(a.name),j=domainOrder.indexOf(b.name);return (i<0?999:i)-(j<0?999:j)});set(KEY,domains);let selected=0,expanded=new Set(domains.map(d=>d.id)),visible=get(VIS,{});
 function save(){set(KEY,domains);syncNames();render();tree()}
 function allGroups(){return domains.flatMap(d=>d.groups.map(g=>({domain:d,group:g})))}
 function groupPath(d,g){const parent=d.groups.find(x=>x.id===g.parentId);return parent?groupPath(d,parent)+' / '+g.name:g.name}
@@ -1998,4 +1998,24 @@ const early=document.getElementById('entryEarly')?.closest('label');if(early)ear
 #calendarEntryDialog .calendar-description-line{grid-template-columns:55px minmax(0,1fr)!important}
 #calendarEntryDialog .calendar-description-line textarea{min-height:48px!important;padding:5px 7px!important}
 @media(max-width:640px){#calendarEntryDialog #entryTitleAndCalendar{grid-template-columns:1fr!important}#calendarEntryDialog .calendar-record-fields{flex-wrap:wrap!important}#calendarEntryDialog #entryChecklistColumns{grid-template-columns:1fr!important}}
-</style><style id="mini-kind-tabs-20261027">#quickDoneFloat .quick-done-head{gap:6px!important}#quickDoneFloat .quick-done-head #miniCategory,#quickDoneFloat .quick-done-head #miniKind{display:none!important}#quickDoneFloat #miniKindTabs{display:inline-flex;gap:0;border:1px solid #dce5df;border-radius:8px;overflow:hidden;flex-shrink:0}#quickDoneFloat #miniKindTabs button{border:0!important;border-right:1px solid #dce5df!important;border-radius:0!important;background:#f8faf8!important;padding:5px 9px!important;font-size:12px!important;min-width:39px!important}#quickDoneFloat #miniKindTabs button:last-child{border-right:0!important}#quickDoneFloat #miniKindTabs button.active{background:#e3f0e8!important;color:#235f40!important;font-weight:700!important}#quickDoneFloat .mini-planned-input::placeholder{color:transparent!important}</style></body></html>
+</style><style id="mini-kind-tabs-20261027">#quickDoneFloat .quick-done-head{gap:6px!important}#quickDoneFloat .quick-done-head #miniCategory,#quickDoneFloat .quick-done-head #miniKind{display:none!important}#quickDoneFloat #miniKindTabs{display:inline-flex;gap:0;border:1px solid #dce5df;border-radius:8px;overflow:hidden;flex-shrink:0}#quickDoneFloat #miniKindTabs button{border:0!important;border-right:1px solid #dce5df!important;border-radius:0!important;background:#f8faf8!important;padding:5px 9px!important;font-size:12px!important;min-width:39px!important}#quickDoneFloat #miniKindTabs button:last-child{border-right:0!important}#quickDoneFloat #miniKindTabs button.active{background:#e3f0e8!important;color:#235f40!important;font-weight:700!important}#quickDoneFloat .mini-planned-input::placeholder{color:transparent!important}</style><style id="life-compact-order-20261027">
+#lifeSystem .ls-nested-root{padding:4px 2px!important}
+#lifeSystem .ls-nested-domain{margin:0!important;padding:0!important;width:100%!important}
+#lifeSystem .ls-nested-line{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:4px!important;padding:2px 1px!important;min-height:26px!important}
+#lifeSystem .ls-nested-line .ls-nested-name{width:clamp(95px,18vw,195px)!important;min-width:80px!important;max-width:195px!important;height:26px!important;padding:2px 5px!important}
+#lifeSystem .ls-nested-children{margin-left:16px!important;padding-left:7px!important}
+#lifeSystem .ls-task-table{margin:2px 0 5px!important;font-size:11px!important;border-spacing:0!important}
+#lifeSystem .ls-task-table th{padding:3px 4px!important;font-size:10px!important;white-space:nowrap!important}
+#lifeSystem .ls-task-table td{padding:2px 4px!important;vertical-align:middle!important}
+#lifeSystem .ls-task-table td:first-child{min-width:110px!important}
+#lifeSystem .ls-task-table input:not([type=checkbox]){min-height:25px!important;height:25px!important;padding:2px 5px!important}
+#lifeSystem .ls-task-table .ls-repeat-trigger{padding:3px 5px!important;font-size:10px!important;white-space:nowrap!important}
+#lifeSystem .ls-task-table-row{height:29px!important}
+#lifeSystem .ls-nested-root>.ls-nested-domain>.ls-nested-line{border-bottom:1px solid #edf1ed!important}
+.ls-repeat-dialog{width:min(490px,calc(100vw - 24px))!important;padding:13px!important}
+.ls-repeat-dialog .ls-repeat-line{display:flex!important;align-items:center!important;gap:5px!important;margin:7px 0!important;white-space:nowrap!important}
+.ls-repeat-dialog .ls-repeat-days{display:flex!important;flex-wrap:nowrap!important;gap:4px!important;margin:7px 0!important;white-space:nowrap!important}
+.ls-repeat-dialog .ls-repeat-days label{padding:3px!important;gap:2px!important;font-size:11px!important}
+.ls-repeat-dialog .ls-repeat-days input{width:13px!important;height:13px!important}
+@media(max-width:680px){#lifeSystem .ls-nested-root{overflow-x:auto!important}#lifeSystem .ls-nested-domain{min-width:580px!important}.ls-repeat-dialog .ls-repeat-days{flex-wrap:wrap!important}}
+</style></body></html>
