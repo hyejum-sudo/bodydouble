@@ -2302,4 +2302,25 @@ const extra=document.getElementById('entryExtras');if(extra){const toggle=docume
 #calendarEntryDialog #entryTravelPlan .entry-travel-layout>label{min-width:0!important}
 #calendarEntryDialog #entryTravelPlan .entry-travel-layout>label:has(#entryTravelMinutes),#calendarEntryDialog #entryTravelPlan .entry-travel-layout>label:has(#entryBufferMinutes),#calendarEntryDialog #entryTravelPlan .entry-travel-layout>label:has(#entryPlannedArrival),#calendarEntryDialog #entryTravelPlan .entry-travel-layout>label:has(#entryActualArrival){grid-column:auto!important;grid-row:2!important}
 #calendarEntryDialog #entryTravelPlan .entry-travel-layout>label:has(#entryClothes){display:none!important}
-</style><script id="entry-layout-hard-fix-script-20261027">(function(){function apply(){const dialog=document.getElementById('calendarEntryDialog');if(!dialog)return;const clothes=document.getElementById('entryClothes');if(clothes){const label=clothes.closest('label');if(label){clothes.type='hidden';dialog.append(clothes);label.remove()}}dialog.querySelectorAll('label').forEach(label=>{if(label.querySelector('input,select,textarea'))return;const t=label.textContent.trim();if(t==='복장'||t==='옷')label.remove()});const fields=[['entryTravelMinutes','이동시간','30분'],['entryBufferMinutes','여유시간','10분'],['entryPlannedArrival','예정도착',null],['entryActualArrival','실제도착',null]];const travel=document.querySelector('#entryTravelPlan .entry-travel-layout');if(travel){fields.forEach(([key,title,placeholder])=>{const input=document.getElementById(key);const label=input?.closest('label');if(!label)return;const nodes=[...label.childNodes];nodes.filter(n=>n.nodeType===3).forEach(n=>n.textContent='');label.prepend(document.createTextNode(title));if(placeholder)input.placeholder=placeholder;travel.append(label)});const location=document.getElementById('entryLocation')?.closest('label'),transport=document.getElementById('entryTransport')?.closest('label');if(location)travel.prepend(location);if(transport)location?location.after(transport):travel.prepend(transport)}const times=document.getElementById('entryPrepTimeRows');if(times){times.querySelectorAll('input').forEach(input=>input.placeholder='분')}const heading=document.getElementById('unifiedSupplyRows')?.parentElement?.querySelector('strong');if(heading)heading.textContent='준비물/복장/도구'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply()})();</script></body></html>
+</style><script id="entry-layout-hard-fix-script-20261027">(function(){function apply(){const dialog=document.getElementById('calendarEntryDialog');if(!dialog)return;const clothes=document.getElementById('entryClothes');if(clothes){const label=clothes.closest('label');if(label){clothes.type='hidden';dialog.append(clothes);label.remove()}}dialog.querySelectorAll('label').forEach(label=>{if(label.querySelector('input,select,textarea'))return;const t=label.textContent.trim();if(t==='복장'||t==='옷')label.remove()});const fields=[['entryTravelMinutes','이동시간','30분'],['entryBufferMinutes','여유시간','10분'],['entryPlannedArrival','예정도착',null],['entryActualArrival','실제도착',null]];const travel=document.querySelector('#entryTravelPlan .entry-travel-layout');if(travel){fields.forEach(([key,title,placeholder])=>{const input=document.getElementById(key);const label=input?.closest('label');if(!label)return;const nodes=[...label.childNodes];nodes.filter(n=>n.nodeType===3).forEach(n=>n.textContent='');label.prepend(document.createTextNode(title));if(placeholder)input.placeholder=placeholder;travel.append(label)});const location=document.getElementById('entryLocation')?.closest('label'),transport=document.getElementById('entryTransport')?.closest('label');if(location)travel.prepend(location);if(transport)location?location.after(transport):travel.prepend(transport)}const times=document.getElementById('entryPrepTimeRows');if(times){times.querySelectorAll('input').forEach(input=>input.placeholder='분')}const heading=document.getElementById('unifiedSupplyRows')?.parentElement?.querySelector('strong');if(heading)heading.textContent='준비물/복장/도구'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply()})();</script><style id="entry-one-font-size-no-bold-20261027">
+/* All entry-form field labels, typed text, placeholders and controls share one regular font. */
+#calendarEntryDialog{--entry-uniform-font:12px}
+#calendarEntryDialog :is(label,strong,summary,span,small,input,textarea,select,option,button),
+#calendarEntryDialog :is(input,textarea)::placeholder{
+font-family:inherit!important;
+font-size:var(--entry-uniform-font)!important;
+font-weight:400!important;
+font-style:normal!important;
+letter-spacing:normal!important;
+text-transform:none!important;
+}
+#calendarEntryDialog #entryPreparationPlan #entryChecklistColumns>div>strong,
+#calendarEntryDialog #entryPreparationPlan>summary,
+#calendarEntryDialog #entryTravelPlan>summary,
+#calendar #calendarEntryDialog .calendar-record-panel strong,
+#calendar #calendarEntryDialog .calendar-record-panel label{
+font-size:var(--entry-uniform-font)!important;
+font-weight:400!important;
+}
+#calendarEntryDialog :is(input,textarea)::placeholder{font-size:var(--entry-uniform-font)!important;font-weight:400!important;opacity:1!important}
+</style></body></html>
