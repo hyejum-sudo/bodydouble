@@ -2323,4 +2323,19 @@ font-size:var(--entry-uniform-font)!important;
 font-weight:400!important;
 }
 #calendarEntryDialog :is(input,textarea)::placeholder{font-size:var(--entry-uniform-font)!important;font-weight:400!important;opacity:1!important}
+</style><style id="entry-alignment-fix-20261027">
+#calendar #calendarEntryDialog .calendar-record-fields{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;width:100%!important}
+#calendar #calendarEntryDialog .calendar-record-fields::before{content:"일자";font-size:12px;font-weight:700;white-space:nowrap}
+#calendar #calendarEntryDialog .calendar-record-fields>input[type=date]{flex:1 1 145px!important;width:145px!important;min-width:110px!important;height:32px!important}
+#calendar #calendarEntryDialog .calendar-record-fields .calendar-event-time{display:flex!important;flex-direction:row!important;align-items:center!important;gap:4px!important;white-space:nowrap!important;flex:0 1 auto!important;font-weight:700!important}
+#calendar #calendarEntryDialog .calendar-record-fields .calendar-event-time input{width:95px!important;min-width:78px!important;height:32px!important}
+#calendar #calendarEntryDialog #entryPreparationPlan #entryChecklistColumns{align-items:start!important}
+#calendar #calendarEntryDialog #entryPreparationPlan #entryChecklistColumns>div{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:6px!important}
+#calendar #calendarEntryDialog #entryPreparationPlan #entryChecklistColumns>div>strong{display:flex!important;align-items:center!important;height:22px!important;min-height:22px!important;margin:0!important;padding:0!important;font-weight:700!important}
+#calendar #calendarEntryDialog #entryPrepTimeRows,#calendar #calendarEntryDialog #unifiedPreparationRows,#calendar #calendarEntryDialog #unifiedSupplyRows{margin:0!important;padding:0!important}
+#calendar #calendarEntryDialog #entryPrepTimeRows>input{height:32px!important;min-height:32px!important;margin:0 0 6px!important;box-sizing:border-box!important}
+#calendar #calendarEntryDialog #entryPreparationPlan .calendar-checklist-row{min-height:32px!important;margin:0 0 6px!important;align-items:center!important}
+#calendar #calendarEntryDialog :is(strong,summary){font-weight:700!important}
+#calendar #calendarEntryDialog :is(input,textarea,select)::placeholder{font-weight:400!important}
+@media(max-width:540px){#calendar #calendarEntryDialog .calendar-record-fields{gap:4px!important}#calendar #calendarEntryDialog .calendar-record-fields .calendar-event-time input{width:80px!important;min-width:65px!important}}
 </style></body></html>
