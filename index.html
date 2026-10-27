@@ -2071,4 +2071,15 @@ dialog.addEventListener('close',()=>{});new MutationObserver(()=>{if(dialog.open
 build(window.getCalendarLifeSelection?.()||category.value);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-})();</script></body></html>
+})();</script><style id="new-entry-one-line-compact-20261027">
+#calendarEntryDialog .entry-kind-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important;padding:3px!important;align-items:stretch!important}
+#calendarEntryDialog .entry-kind-tabs button{display:flex!important;align-items:center!important;justify-content:center!important;min-height:30px!important;height:30px!important;padding:3px 6px!important;line-height:1.2!important;font-size:12px!important;white-space:nowrap!important}
+#calendarEntryDialog #entryTitleAndCalendar{grid-template-columns:minmax(0,2fr) minmax(0,1.1fr) minmax(0,1.35fr)!important;align-items:end!important;gap:8px!important;width:100%!important}
+#calendarEntryDialog #entryTitleAndCalendar>.calendar-title-line,#calendarEntryDialog #entryTitleAndCalendar>.entry-life-select{min-width:0!important;width:100%!important;max-width:none!important;margin:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;gap:4px!important;align-items:stretch!important;justify-content:end!important}
+#calendarEntryDialog #entryTitleAndCalendar>.calendar-title-line>span,#calendarEntryDialog #entryTitleAndCalendar>.entry-life-select{font-size:12px!important;line-height:16px!important}
+#calendarEntryDialog #entryTitleAndCalendar .calendar-title-line input,#calendarEntryDialog #entryTitleAndCalendar .entry-life-select select{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;height:32px!important;min-height:32px!important;max-height:32px!important;padding:4px 7px!important;font-size:12px!important;line-height:20px!important;box-sizing:border-box!important;border-radius:7px!important}
+#calendarEntryDialog #entryTitleAndCalendar .entry-life-select select{padding-right:18px!important;text-overflow:ellipsis!important}
+#calendarEntryDialog .calendar-record-fields>input[type=date],#calendarEntryDialog .calendar-record-fields .calendar-event-time input,#calendarEntryDialog .calendar-record-fields #calendarEntryRepeat{height:32px!important;min-height:32px!important;max-height:32px!important;box-sizing:border-box!important;font-size:12px!important}
+#calendarEntryDialog .calendar-record-panel{min-width:0!important}
+@media(max-width:540px){#calendarEntryDialog #entryTitleAndCalendar{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1.2fr)!important;gap:4px!important}#calendarEntryDialog #entryTitleAndCalendar .entry-life-select select{font-size:11px!important;padding-left:3px!important;padding-right:13px!important}}
+</style></body></html>
