@@ -25,6 +25,7 @@
   let dirty = false;
   let syncing = false;
   let syncTimer = null;
+  let authRetryTimer = null;
   let ready = false;
   let originalSet;
   let originalRemove;
@@ -200,6 +201,8 @@
 
   async function syncFromCloud(user) {
     currentUser = user;
+    if (authRetryTimer) window.clearInterval(authRetryTimer);
+    authRetryTimer = null;
     const { data, error } = await supabase
       .from("app_state")
       .select("state")
@@ -323,10 +326,38 @@
     await syncFromCloud(data.session.user);
   }
 
+  function startAuthRetry() {
+    if (authRetryTimer) return;
+    authRetryTimer = window.setInterval(async () => {
+      try {
+        if (!supabase) {
+          const { createClient } = await import(SUPABASE_SDK_URL);
+          supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+          });
+        }
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        let user = data.session?.user;
+        if (!user) {
+          const { data: anonymous, error: anonymousError } = await supabase.auth.signInAnonymously();
+          if (anonymousError) throw anonymousError;
+          user = anonymous.user;
+        }
+        if (!user) throw new Error("익명 세션을 만들지 못했어요.");
+        await syncFromCloud(user);
+      } catch (error) {
+        setStatus("온라인 저장 연결 대기 · 이 브라우저에는 기록이 저장돼요.", true);
+      }
+    }, 10000);
+  }
+
   main().catch((error) => {
-    setAuthenticated(false);
-    setGateMessage(error?.message || "개발 저장소에 연결하지 못했어요.", true);
-    setStatus("Supabase 연결 오류", true);
+    ready = true;
+    setAuthenticated(true);
+    setGateMessage("온라인 저장소에 다시 연결하는 중이에요.");
+    setStatus("온라인 저장 연결 대기 · 이 브라우저에는 기록이 저장돼요.", true);
+    startAuthRetry();
     console.error("Supabase startup failed:", error);
   });
 })();
