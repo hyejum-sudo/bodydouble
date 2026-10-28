@@ -13,7 +13,7 @@ const KEYS = new Set([
   "moyo-life-system-v1",
 ]);
 
-function allowedOrigin(origin) {
+function isDevelopmentOrigin(origin) {
   if (!origin) return false;
   try {
     const host = new URL(origin).hostname;
@@ -43,7 +43,7 @@ function send(res, status, body) {
 
 module.exports = async function handler(req, res) {
   const origin = req.headers.origin;
-  if (allowedOrigin(origin)) {
+  if (isDevelopmentOrigin(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -63,10 +63,12 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === "GET") {
       const record = await readBlob();
+      const state = record?.state ? { ...record.state } : null;
+      if (state && isDevelopmentOrigin(origin)) delete state["moyo-life-system-v1"];
       return send(res, 200, {
         exists: Boolean(record),
         primary: process.env.EASY_DO_IT_RECORDS_PRIMARY === "true",
-        state: record?.state || null,
+        state,
         updatedAt: record?.updatedAt || null,
       });
     }
@@ -87,6 +89,13 @@ module.exports = async function handler(req, res) {
     }
     if (!Object.keys(state).length) {
       return send(res, 400, { error: "No supported records were provided." });
+    }
+
+    if (isDevelopmentOrigin(origin)) {
+      const existing = await readBlob();
+      const mainSystem = existing?.state?.["moyo-life-system-v1"];
+      if (mainSystem) state["moyo-life-system-v1"] = mainSystem;
+      else delete state["moyo-life-system-v1"];
     }
 
     if (payload.ifEmpty === true) {
