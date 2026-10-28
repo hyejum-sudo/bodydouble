@@ -1,6 +1,7 @@
-const { list, get, put } = require("@vercel/blob");
-
-const FILE = "easy-do-it/shared-records.json";
+const SUPABASE_TABLE = "single_user_app_records";
+const RECORD_ID = "main";
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
 const KEYS = new Set([
   "moyo-dashboard-v1",
   "moyo-calendar-names-v1",
@@ -25,13 +26,34 @@ function isDevelopmentOrigin(origin) {
   }
 }
 
-async function readBlob() {
-  const result = await list({ prefix: FILE });
-  const exists = result.blobs.some((blob) => blob.pathname === FILE);
-  if (!exists) return null;
-  const file = await get(FILE, { access: "private" });
-  if (!file) return null;
-  return JSON.parse(await new Response(file.stream).text());
+async function supabaseRequest(method, body) {
+  const response = await fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + SUPABASE_TABLE + "?id=eq." + RECORD_ID, {
+    method,
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates,return=representation",
+      "Cache-Control": "no-store",
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  if (!response.ok) {
+    throw new Error("Supabase record request failed: HTTP " + response.status);
+  }
+  return response.json();
+}
+
+async function readRecord() {
+  const rows = await supabaseRequest("GET");
+  const row = rows[0];
+  return row ? { state: row.state, updatedAt: row.updated_at } : null;
+}
+
+async function writeRecord(state) {
+  const updatedAt = new Date().toISOString();
+  await supabaseRequest("POST", { id: RECORD_ID, state, updated_at: updatedAt });
+  return updatedAt;
 }
 
 function send(res, status, body) {
@@ -56,13 +78,13 @@ module.exports = async function handler(req, res) {
     return res.end();
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return send(res, 503, { error: "Shared record storage is not connected." });
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    return send(res, 503, { error: "Supabase record storage is not connected." });
   }
 
   try {
     if (req.method === "GET") {
-      const record = await readBlob();
+      const record = await readRecord();
       const state = record?.state ? { ...record.state } : null;
       if (state && isDevelopmentOrigin(origin)) delete state["moyo-life-system-v1"];
       return send(res, 200, {
@@ -92,27 +114,21 @@ module.exports = async function handler(req, res) {
     }
 
     if (isDevelopmentOrigin(origin)) {
-      const existing = await readBlob();
+      const existing = await readRecord();
       const mainSystem = existing?.state?.["moyo-life-system-v1"];
       if (mainSystem) state["moyo-life-system-v1"] = mainSystem;
       else delete state["moyo-life-system-v1"];
     }
 
     if (payload.ifEmpty === true) {
-      const existing = await readBlob();
+      const existing = await readRecord();
       if (existing) {
         return send(res, 200, { saved: false, exists: true, state: existing.state, updatedAt: existing.updatedAt });
       }
     }
 
-    const record = { schema: 1, state, updatedAt: new Date().toISOString() };
-    await put(FILE, JSON.stringify(record), {
-      access: "private",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "application/json; charset=utf-8",
-    });
-    return send(res, 200, { saved: true, exists: true, updatedAt: record.updatedAt });
+    const updatedAt = await writeRecord(state);
+    return send(res, 200, { saved: true, exists: true, updatedAt });
   } catch (error) {
     console.error("Shared record storage error:", error);
     return send(res, 500, { error: "Shared record storage is temporarily unavailable." });
