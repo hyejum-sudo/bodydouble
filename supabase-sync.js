@@ -17,7 +17,7 @@
   ];
   const watched = new Set(KEYS);
   const OWNER_KEY = "moyo-supabase-owner-v1";
-  const IMPORT_LOCAL_ON_FIRST_LOGIN = false;
+  const IMPORT_LOCAL_ON_FIRST_LOGIN = true;
   const encode = (value) => stableStringify(value);
   let supabase;
   let currentUser = null;
@@ -154,52 +154,17 @@
       #supabaseAuthGate .auth-card { width:min(100%,420px); padding:26px; background:#fff; border:1px solid #dfe4ec; border-radius:18px; box-shadow:0 12px 40px #23304718; }
       #supabaseAuthGate h1 { margin:0 0 8px; font-size:22px; }
       #supabaseAuthGate p { color:#66758a; line-height:1.5; }
-      #supabaseAuthGate form { display:grid; gap:12px; margin-top:20px; }
-      #supabaseAuthGate label { display:grid; gap:6px; font-size:14px; }
-      #supabaseAuthGate input { width:100%; padding:11px; border:1px solid #cbd5e1; border-radius:9px; font:inherit; }
-      #supabaseAuthGate button { padding:11px 14px; border:0; border-radius:10px; background:#376f72; color:white; font:inherit; cursor:pointer; }
-      #supabaseAuthGate button:disabled { opacity:.6; cursor:wait; }
       #supabaseAuthGate [aria-live] { min-height:20px; font-size:13px; }
     `;
     document.head.appendChild(style);
 
     gate = document.createElement("section");
     gate.id = "supabaseAuthGate";
-    gate.setAttribute("role", "dialog");
-    gate.setAttribute("aria-modal", "true");
-    gate.setAttribute("aria-labelledby", "supabaseAuthTitle");
-    gate.innerHTML = `
-      <div class="auth-card">
-        <h1 id="supabaseAuthTitle">개발판 로그인</h1>
-        <p>개발판 기록은 메인 기록과 분리된 저장소에 보관됩니다. 이메일로 로그인 링크를 받을게요.</p>
-        <form id="supabaseAuthForm">
-          <label for="supabaseAuthEmail">이메일</label>
-          <input id="supabaseAuthEmail" type="email" autocomplete="email" required placeholder="name@example.com">
-          <button id="supabaseAuthSubmit" type="submit">로그인 링크 보내기</button>
-        </form>
-        <p id="supabaseAuthMessage" aria-live="polite"></p>
-      </div>`;
+    gate.setAttribute("role", "status");
+    gate.setAttribute("aria-live", "polite");
+    gate.innerHTML = "<div class=\"auth-card\"><h1 id=\"supabaseAuthTitle\">개발판 저장 연결 중</h1><p>이메일 없이 자동으로 개발용 저장소에 연결합니다.</p><p id=\"supabaseAuthMessage\" aria-live=\"polite\">잠시만 기다려 주세요.</p></div>";
     document.body.appendChild(gate);
     gateMessage = gate.querySelector("#supabaseAuthMessage");
-    gate.querySelector("#supabaseAuthForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const email = gate.querySelector("#supabaseAuthEmail").value.trim();
-      const button = gate.querySelector("#supabaseAuthSubmit");
-      button.disabled = true;
-      setGateMessage("로그인 링크를 보내는 중…");
-      try {
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: { emailRedirectTo: location.origin },
-        });
-        if (error) throw error;
-        setGateMessage("이메일을 확인하고 링크를 누르면 개발판으로 돌아옵니다.");
-      } catch (error) {
-        setGateMessage(error?.message || "로그인 링크를 보내지 못했어요.", true);
-      } finally {
-        button.disabled = false;
-      }
-    });
   }
 
   function ensureSignOutButton() {
@@ -349,8 +314,10 @@
     const { data, error } = await supabase.auth.getSession();
     if (error) throw error;
     if (!data.session?.user) {
-      setAuthenticated(false);
-      setGateMessage("이메일 주소를 입력해 로그인 링크를 받으세요.");
+      const { data: anonymous, error: anonymousError } = await supabase.auth.signInAnonymously();
+      if (anonymousError) throw anonymousError;
+      if (!anonymous.user) throw new Error("익명 세션을 만들지 못했어요.");
+      await syncFromCloud(anonymous.user);
       return;
     }
     await syncFromCloud(data.session.user);
