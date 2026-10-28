@@ -1,8 +1,5 @@
 {
   "name": "easy-do-it",
   "private": true,
-  "version": "1.0.0",
-  "dependencies": {
-    "@vercel/blob": "^2.0.0"
-  }
+  "version": "1.0.0"
 }
