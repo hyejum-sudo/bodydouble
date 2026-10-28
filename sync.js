@@ -27,6 +27,8 @@
   let dirty = false;
   let lastSynced = "";
   let syncing = false;
+  let syncTimer = null;
+  let retryTimer = null;
 
   function snapshot() {
     const state = {};
@@ -37,9 +39,7 @@
     return state;
   }
 
-  function encode(value) {
-    return JSON.stringify(value);
-  }
+  const encode = (value) => JSON.stringify(value);
 
   function hasLocalRecords(state) {
     return Object.values(state).some((value) => value && value !== "[]" && value !== "{}");
@@ -174,6 +174,31 @@
     return true;
   }
 
+  function startSync() {
+    if (syncTimer) return;
+    ready = true;
+    syncTimer = setInterval(syncOnce, 5000);
+    window.addEventListener("storage", (event) => {
+      if (watched.has(event.key)) dirty = true;
+    });
+  }
+
+  function startRetry() {
+    if (retryTimer) return;
+    retryTimer = setInterval(async () => {
+      if (syncing) return;
+      try {
+        if (await initialize()) {
+          clearInterval(retryTimer);
+          retryTimer = null;
+          startSync();
+        }
+      } catch (error) {
+        setStatus("저장소 연결 대기 중 · 현재 기록은 브라우저에 보존돼요.", true);
+      }
+    }, 10000);
+  }
+
   function installWatcher() {
     Storage.prototype.setItem = function (key, value) {
       originalSet.call(this, key, value);
@@ -214,29 +239,11 @@
 
   installWatcher();
   initialize().then((connected) => {
-    ready = true;
-    if (connected) {
-      const current = encode(snapshot());
-      if (lastSynced && current !== lastSynced) dirty = true;
-      setInterval(syncOnce, 5000);
-      window.addEventListener("storage", (event) => {
-        if (watched.has(event.key)) dirty = true;
-      });
-    } else {
-      setInterval(() => {
-        if (!ready) return;
-        initialize().then((connectedLater) => {
-          if (connectedLater) {
-            ready = true;
-            setInterval(syncOnce, 5000);
-          }
-        }).catch(() => {});
-      }, 10000);
-      ready = false;
-    }
+    if (connected) startSync();
+    else startRetry();
   }).catch((error) => {
     setStatus("저장소 연결 대기 중 · 현재 기록은 브라우저에 보존돼요.", true);
     console.warn("Shared record sync pending:", error);
-    setTimeout(() => { ready = true; setInterval(syncOnce, 10000); }, 10000);
+    startRetry();
   });
 })();
