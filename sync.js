@@ -18,9 +18,8 @@
   const isDevelopment = host === "bodydouble-dev.vercel.app"
     || host === "bodydouble-dev-hyejum-sudo.vercel.app"
     || /^bodydouble-dev-[a-z0-9-]+-hyejum-sudo\.vercel\.app$/.test(host);
-  const endpoint = isDevelopment
-    ? "https://bodydouble-lyart.vercel.app/api/records"
-    : "/api/records";
+  // Each deployment uses its own API and database. Never write to main from dev.
+  const endpoint = "/api/records";
   const originalSet = Storage.prototype.setItem;
   const originalRemove = Storage.prototype.removeItem;
   let suppress = false;
@@ -159,7 +158,7 @@
         setStatus("메인 기록을 공유 저장소에 연결했어요.");
         return true;
       }
-      setStatus("메인 기록이 저장소에 연결되면 개발 버전과 공유돼요.");
+      setStatus("현재 버전의 저장소 연결을 기다리고 있어요.");
       return false;
     }
 
@@ -170,8 +169,8 @@
     const changedLocal = encode(local) !== encode(merged);
     if (changedLocal) applyState(merged);
     lastSynced = encode(merged);
-    setStatus("메인·개발 기록이 같은 저장소에 연결됐어요.");
-    if (changedLocal) location.reload();
+    setStatus("현재 버전의 저장소에 연결됐어요.");
+    // State is already applied locally; do not reload on initial synchronization.
     return true;
   }
 
@@ -220,7 +219,7 @@
         const saved = await request("POST", { state: current });
         lastSynced = encode(current);
         dirty = false;
-        if (saved.saved) setStatus("기록 저장 완료 · 메인·개발 공통");
+        if (saved.saved) setStatus("기록 저장 완료");
         return;
       }
       const remote = await request("GET");
@@ -228,7 +227,7 @@
         applyState(remote.state || {});
         lastSynced = encode(remote.state || {});
         setStatus("다른 버전의 최신 기록을 불러왔어요.");
-        location.reload();
+        // Avoid reload loops; updated local storage is read on the next render.
       }
     } catch (error) {
       setStatus("저장소 연결 대기 중 · 현재 기록은 브라우저에 보존돼요.", true);
