@@ -27,7 +27,7 @@ function isDevelopmentOrigin(origin) {
 }
 
 async function supabaseRequest(method, body) {
-  const response = await fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + SUPABASE_TABLE + "?id=eq." + RECORD_ID, {
+  const response = await fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + SUPABASE_TABLE + (method === "GET" ? "?id=eq." + RECORD_ID : "?on_conflict=id"), {
     method,
     headers: {
       apikey: SUPABASE_KEY,
