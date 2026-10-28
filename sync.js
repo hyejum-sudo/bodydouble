@@ -1,3 +1,4 @@
+// Shared storage sync entry point. Keeps both dashboard deployments on one private record set.
 (function () {
   "use strict";
 
