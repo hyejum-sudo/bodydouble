@@ -15,7 +15,7 @@
   ];
   const watched = new Set(KEYS);
   // Same-origin API keeps the development app on its own Vercel project and database.
-  const endpoint = "/api/records";
+  const endpoint = "/api/records"; // resolved on bodydouble-dev, never routed through main
   const originalSet = Storage.prototype.setItem;
   const originalRemove = Storage.prototype.removeItem;
   let suppress = false;
