@@ -109,7 +109,8 @@ module.exports = async function handler(req, res) {
     for (const [key, value] of Object.entries(payload.state)) {
       if (KEYS.has(key) && typeof value === "string") state[key] = value;
     }
-    if (!Object.keys(state).length) {
+    const isEmptyInitialization = payload.ifEmpty === true && Object.keys(state).length === 0;
+    if (!Object.keys(state).length && !isEmptyInitialization) {
       return send(res, 400, { error: "No supported records were provided." });
     }
 

@@ -41,10 +41,6 @@
 
   const encode = (value) => JSON.stringify(value);
 
-  function hasLocalRecords(state) {
-    return Object.values(state).some((value) => value && value !== "[]" && value !== "{}");
-  }
-
   function mergeValue(local, remote) {
     if (Array.isArray(local) && Array.isArray(remote)) {
       const keyOf = (item) => item && typeof item === "object"
@@ -145,7 +141,7 @@
     const remote = await request("GET");
 
     if (!remote.exists) {
-      if (!isDevelopment && remote.primary && hasLocalRecords(local)) {
+      if (!isDevelopment && remote.primary) {
         const seeded = await request("POST", { state: local, ifEmpty: true });
         if (seeded.exists && seeded.state) {
           const merged = mergeStates(local, seeded.state);
