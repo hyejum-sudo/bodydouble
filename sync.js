@@ -18,9 +18,8 @@
   const isDevelopment = host === "bodydouble-dev.vercel.app"
     || host === "bodydouble-dev-hyejum-sudo.vercel.app"
     || /^bodydouble-dev-[a-z0-9-]+-hyejum-sudo\.vercel\.app$/.test(host);
-  const endpoint = isDevelopment
-    ? "https://bodydouble-lyart.vercel.app/api/records"
-    : "/api/records";
+  // Development must never contact the production records API.
+  const endpoint = "/api/records";
   const originalSet = Storage.prototype.setItem;
   const originalRemove = Storage.prototype.removeItem;
   let suppress = false;
@@ -171,7 +170,7 @@
     if (changedLocal) applyState(merged);
     lastSynced = encode(merged);
     setStatus("메인·개발 기록이 같은 저장소에 연결됐어요.");
-    if (changedLocal) location.reload();
+    // Avoid repeated reloads during synchronization.
     return true;
   }
 
@@ -228,7 +227,7 @@
         applyState(remote.state || {});
         lastSynced = encode(remote.state || {});
         setStatus("다른 버전의 최신 기록을 불러왔어요.");
-        location.reload();
+        // Do not reload automatically.
       }
     } catch (error) {
       setStatus("저장소 연결 대기 중 · 현재 기록은 브라우저에 보존돼요.", true);
