@@ -145,7 +145,7 @@
     const remote = await request("GET");
 
     if (!remote.exists) {
-      if (!isDevelopment && remote.primary && hasLocalRecords(local)) {
+      if (remote.primary) {
         const seeded = await request("POST", { state: local, ifEmpty: true });
         if (seeded.exists && seeded.state) {
           const merged = mergeStates(local, seeded.state);
@@ -155,10 +155,10 @@
         } else {
           lastSynced = encode(local);
         }
-        setStatus("메인 기록을 공유 저장소에 연결했어요.");
+        setStatus("개발 기록 저장소를 초기화했어요.");
         return true;
       }
-      setStatus("메인 기록이 저장소에 연결되면 개발 버전과 공유돼요.");
+      setStatus("현재 버전의 기록 저장소 연결을 기다리고 있어요.");
       return false;
     }
 
@@ -169,7 +169,7 @@
     const changedLocal = encode(local) !== encode(merged);
     if (changedLocal) applyState(merged);
     lastSynced = encode(merged);
-    setStatus("메인·개발 기록이 같은 저장소에 연결됐어요.");
+    setStatus("개발 기록 저장소에 연결됐어요.");
     // Avoid repeated reloads during synchronization.
     return true;
   }
@@ -219,7 +219,7 @@
         const saved = await request("POST", { state: current });
         lastSynced = encode(current);
         dirty = false;
-        if (saved.saved) setStatus("기록 저장 완료 · 메인·개발 공통");
+        if (saved.saved) setStatus("기록 저장 완료 · 저장 완료");
         return;
       }
       const remote = await request("GET");
