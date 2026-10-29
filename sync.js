@@ -18,6 +18,10 @@
   const isDevelopment = host === "bodydouble-dev.vercel.app"
     || host === "bodydouble-dev-hyejum-sudo.vercel.app"
     || /^bodydouble-dev-[a-z0-9-]+-hyejum-sudo\.vercel\.app$/.test(host);
+  // Branch previews share the production Supabase project. Keep them browser-local for safe QA.
+  const isReadOnlyPreview = host.endsWith(".vercel.app")
+    && host !== "bodydouble-lyart.vercel.app"
+    && !isDevelopment;
   // Each deployment uses its own API and database. Never write to main from dev.
   const endpoint = "/api/records";
   const originalSet = Storage.prototype.setItem;
@@ -159,6 +163,12 @@
     }
 
     const merged = mergeStates(local, remote.state || {});
+    if (isReadOnlyPreview) {
+      applyState(merged);
+      lastSynced = encode(merged);
+      setStatus("Preview · 이 브라우저에만 저장돼요.");
+      return true;
+    }
     if (encode(merged) !== encode(remote.state || {})) {
       await request("POST", { state: merged });
     }
@@ -171,7 +181,7 @@
   }
 
   function startSync() {
-    if (syncTimer) return;
+    if (syncTimer || isReadOnlyPreview) { ready = true; return; }
     ready = true;
     syncTimer = setInterval(syncOnce, 5000);
     window.addEventListener("storage", (event) => {

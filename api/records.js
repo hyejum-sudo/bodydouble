@@ -78,6 +78,11 @@ module.exports = async function handler(req, res) {
     return res.end();
   }
 
+  // Preview deployments share project credentials; keep QA writes out of the primary record.
+  if (req.method === "POST" && process.env.VERCEL_ENV === "preview") {
+    return send(res, 403, { error: "Preview deployments are read-only for shared records." });
+  }
+
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     return send(res, 503, { error: "Supabase record storage is not connected." });
   }
