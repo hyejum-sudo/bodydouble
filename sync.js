@@ -14,11 +14,7 @@
     "moyo-life-system-v1",
   ];
   const watched = new Set(KEYS);
-  const host = location.hostname;
-  const isDevelopment = host === "bodydouble-dev.vercel.app"
-    || host === "bodydouble-dev-hyejum-sudo.vercel.app"
-    || /^bodydouble-dev-[a-z0-9-]+-hyejum-sudo\.vercel\.app$/.test(host);
-  // Each deployment uses its own API and database. Never write to main from dev.
+  // Same-origin API keeps the development app on its own Vercel project and database.
   const endpoint = "/api/records";
   const originalSet = Storage.prototype.setItem;
   const originalRemove = Storage.prototype.removeItem;
@@ -141,7 +137,7 @@
     const remote = await request("GET");
 
     if (!remote.exists) {
-      if (!isDevelopment && remote.primary) {
+      if (remote.primary) {
         const seeded = await request("POST", { state: local, ifEmpty: true });
         if (seeded.exists && seeded.state) {
           const merged = mergeStates(local, seeded.state);
@@ -151,7 +147,7 @@
         } else {
           lastSynced = encode(local);
         }
-        setStatus("메인 기록을 공유 저장소에 연결했어요.");
+        setStatus("기록 저장소를 초기화했어요.");
         return true;
       }
       setStatus("현재 버전의 저장소 연결을 기다리고 있어요.");
