@@ -1953,7 +1953,6 @@ document.addEventListener('focusin',e=>{const el=e.target.closest?.(editable);if
     window.renderMiniRecords=render;
     window.refreshMiniCategories=()=>{const old=panel.dataset.miniPageCalendar;const names=enabledCalendars();if(!names.includes(old))panel.dataset.miniPageCalendar='기본';render()};
     window.moveMiniToCalendar=(taskId,category)=>{const data=readQuick();let moved=false;Object.values(data).forEach(arr=>{if(!Array.isArray(arr))return;arr.forEach(v=>{if(v&&typeof v==='object'&&v.id===taskId){v.category=category;moved=true}})});if(moved){put(KEY,data);const db=readDash(),item=db.items.find(x=>x.id===taskId);if(item)item.calendarCategory=category;put(DASH,db);render()}};
-    new MutationObserver(()=>{if(!panel.hidden)render()}).observe(panel,{attributes:true,attributeFilter:['hidden','data-mini-page-calendar','data-mini-page-day']});
     document.addEventListener('click',e=>{if(e.target.closest?.('#calendarDoneLog'))setTimeout(render,0)},true);
     window.addEventListener('storage',e=>{if(e.key===KEY||e.key===LIFE)render()});
     render();
