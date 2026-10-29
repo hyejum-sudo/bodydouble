@@ -18,6 +18,10 @@
   const isDevelopment = host === "bodydouble-dev.vercel.app"
     || host === "bodydouble-dev-hyejum-sudo.vercel.app"
     || /^bodydouble-dev-[a-z0-9-]+-hyejum-sudo\.vercel\.app$/.test(host);
+  if (isDevelopment) {
+    // Development uses localStorage in this browser only.
+    return;
+  }
   // Each deployment uses its own API and database. Never write to main from dev.
   const endpoint = "/api/records";
   const originalSet = Storage.prototype.setItem;
