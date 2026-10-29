@@ -1,7 +1,7 @@
 const SUPABASE_TABLE = "single_user_app_records";
 const RECORD_ID = "main";
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+const SUPABASE_URL = process.env.DEV_SUPABASE_URL || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.DEV_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
 const KEYS = new Set([
   "moyo-dashboard-v1",
   "moyo-calendar-names-v1",
@@ -13,18 +13,6 @@ const KEYS = new Set([
   "moyo-quick-done-v1",
   "moyo-life-system-v1",
 ]);
-
-function isDevelopmentOrigin(origin) {
-  if (!origin) return false;
-  try {
-    const host = new URL(origin).hostname;
-    return host === "bodydouble-dev.vercel.app"
-      || host === "bodydouble-dev-hyejum-sudo.vercel.app"
-      || /^bodydouble-dev-[a-z0-9-]+-hyejum-sudo\.vercel\.app$/.test(host);
-  } catch {
-    return false;
-  }
-}
 
 async function supabaseRequest(method, body) {
   const response = await fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + SUPABASE_TABLE + (method === "GET" ? "?id=eq." + RECORD_ID : "?on_conflict=id"), {
@@ -64,15 +52,6 @@ function send(res, status, body) {
 }
 
 module.exports = async function handler(req, res) {
-  const origin = req.headers.origin;
-  if (isDevelopmentOrigin(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    res.setHeader("Vary", "Origin");
-  }
-
   if (req.method === "OPTIONS") {
     res.statusCode = 204;
     return res.end();
@@ -86,7 +65,6 @@ module.exports = async function handler(req, res) {
     if (req.method === "GET") {
       const record = await readRecord();
       const state = record?.state ? { ...record.state } : null;
-      if (state && isDevelopmentOrigin(origin)) delete state["moyo-life-system-v1"];
       return send(res, 200, {
         exists: Boolean(record),
         primary: process.env.EASY_DO_IT_RECORDS_PRIMARY === "true",
@@ -112,13 +90,6 @@ module.exports = async function handler(req, res) {
     const isEmptyInitialization = payload.ifEmpty === true && Object.keys(state).length === 0;
     if (!Object.keys(state).length && !isEmptyInitialization) {
       return send(res, 400, { error: "No supported records were provided." });
-    }
-
-    if (isDevelopmentOrigin(origin)) {
-      const existing = await readRecord();
-      const mainSystem = existing?.state?.["moyo-life-system-v1"];
-      if (mainSystem) state["moyo-life-system-v1"] = mainSystem;
-      else delete state["moyo-life-system-v1"];
     }
 
     if (payload.ifEmpty === true) {
