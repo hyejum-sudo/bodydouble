@@ -2116,8 +2116,7 @@ function init(){
  const dialog=document.getElementById('calendarEntryDialog');
  if(dialog){
   const syncButtons=()=>{if(!dialog.open)return;const heading=dialog.querySelector('.calendar-input-heading'),bar=dialog.querySelector('.entry-top-actions'),save=dialog.querySelector('#unifiedSave'),del=dialog.querySelector('#unifiedDelete'),close=dialog.querySelector('.calendar-dialog-close');if(!heading||!save||!del||!close)return;let actions=bar||heading.querySelector('.entry-top-actions');if(!actions){actions=document.createElement('div');actions.className='entry-top-actions';heading.append(actions)}actions.replaceChildren(del,save,close);const duplicate=dialog.querySelector('#entryBottomSave');if(duplicate)duplicate.remove();close.textContent='끄기';close.setAttribute('aria-label','끄기');close.style.display='inline-flex'};
-  new MutationObserver(syncButtons).observe(dialog,{subtree:true,childList:true,attributes:true,attributeFilter:['open']});
-  dialog.addEventListener('click',()=>setTimeout(syncButtons,0));
+  new MutationObserver(syncButtons).observe(dialog,{attributes:true,attributeFilter:['open']});
  }
 }
 window.openQuickDone=(q)=>openMini(typeof chosen!=='undefined'?chosen:today(),false,q);
