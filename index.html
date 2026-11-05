@@ -1,7 +1,7 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>쉽게하자 | ADHD 대시보드</title><style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#233047;background:#f4f6fa}*{box-sizing:border-box}body{margin:0}header{background:#25364c;color:white;padding:22px max(20px,calc((100vw - 1150px)/2))}h1{margin:0;font-size:24px}header p{margin:5px 0;color:#d5dce7}main{max-width:1150px;margin:auto;padding:20px}nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}button,select,input,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:#e2e8f0;color:#243247}button.primary,button.active{background:#376f72;color:white}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #e2a750}input,textarea,select{padding:10px;border:1px solid #cbd5e1;border-radius:9px;background:white;max-width:100%}textarea{width:100%;min-height:100px}section[hidden]{display:none}.panel{background:white;border:1px solid #dfe4ec;border-radius:16px;padding:17px;margin:12px 0}.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.quad{min-height:210px;background:white;border:1px solid #dfe4ec;border-top:5px solid var(--accent);border-radius:14px;padding:14px}.quad h3{margin:0}.quad small{color:#66758a}.task{background:#f3f6fa;border-radius:9px;padding:10px;margin-top:9px;display:flex;gap:8px;justify-content:space-between;align-items:center;cursor:grab}.task span{overflow-wrap:anywhere}.task button{padding:5px 9px}.formrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.formrow input{flex:1;min-width:180px}.entry{border-bottom:1px solid #e2e8f0;padding:12px 0}.entry:last-child{border:0}.muted{color:#6b7280;font-size:13px}.day{border:1px solid #e0e5ec;border-radius:9px;padding:8px;min-height:95px;background:white;overflow-wrap:anywhere}.day.today{border:2px solid #376f72}.day strong{display:block}.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.event{display:block;background:#dcece9;border-radius:5px;padding:3px;margin-top:4px;font-size:12px}.year{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.year button{min-height:65px}.streak{color:#a45d13;font-weight:bold}dialog{border:0;border-radius:15px;box-shadow:0 20px 70px #0005;max-width:460px;width:90%}dialog form{display:grid;gap:12px}dialog label{display:grid;gap:5px}#timer{font-size:36px;font-variant-numeric:tabular-nums}footer{padding:15px 0;color:#697586;font-size:12px}@media(max-width:650px){.matrix{grid-template-columns:1fr}.calendar{gap:2px}.day{padding:3px;min-height:75px;font-size:11px}.event{font-size:10px}.year{grid-template-columns:repeat(2,1fr)}}</style><style id="mini-popup-layout-final-20261105">
 #quickDoneFloat[hidden]{display:none!important}
-#quickDoneFloat{position:fixed!important;z-index:5000!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translate(-50%,-50%)!important;width:min(980px,calc(100vw - 24px))!important;height:auto!important;max-width:calc(100vw - 24px)!important;max-height:min(760px,82dvh)!important;min-height:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;padding:14px!important;background:#fff!important;border:1px solid #d9e2e9!important;border-radius:16px!important;box-shadow:0 18px 60px #1c2d3d44!important}
+#quickDoneFloat{position:fixed!important;z-index:5000!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translate(-50%,-50%)!important;width:min(860px,calc(100vw - 24px))!important;height:min(540px,calc(100dvh - 24px))!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 16px)!important;min-width:min(420px,calc(100vw - 24px))!important;min-height:300px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;overflow:auto!important;resize:both!important;padding:14px!important;background:#fff!important;border:1px solid #d9e2e9!important;border-radius:16px!important;box-shadow:0 18px 60px #1c2d3d44!important}
 #quickDoneFloat .quick-done-head{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;flex:0 0 auto!important;min-width:0!important;margin:0 0 10px!important}
 #quickDoneFloat .quick-done-head>strong{font-size:18px!important;color:#273548!important}
 #quickDoneFloat .mini-popup-controls{display:flex!important;align-items:end!important;justify-content:flex-end!important;gap:8px!important;min-width:0!important;max-width:100%!important;flex-wrap:wrap!important}
@@ -11,7 +11,7 @@
 #quickDoneFloat #miniKindTabs button{height:32px!important;min-height:32px!important;padding:0 10px!important;border:0!important;border-right:1px solid #dce5df!important;border-radius:0!important;background:#f8faf8!important;font-size:12px!important}
 #quickDoneFloat #miniKindTabs button:last-child{border-right:0!important}
 #quickDoneFloat #miniKindTabs button.active{background:#e3f0e8!important;color:#235f40!important;font-weight:700!important}
-#quickDoneFloat .mini-table-scroll{flex:0 1 auto!important;min-height:0!important;height:auto!important;max-height:calc(82dvh - 150px)!important;width:100%!important;overflow:auto!important;overscroll-behavior:contain!important}
+#quickDoneFloat .mini-table-scroll{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;width:100%!important;overflow:auto!important;overscroll-behavior:contain!important}
 #quickDoneFloat .mini-input-row,#quickDoneFloat #miniColumnHeaders,#quickDoneFloat .quick-done-row{--mini-columns:26px 50px minmax(130px,1fr) 74px 112px 82px 84px 28px;display:grid!important;grid-template-columns:var(--mini-columns)!important;column-gap:5px!important;align-items:center!important;box-sizing:border-box!important;width:100%!important;min-width:0!important}
 #quickDoneFloat .mini-input-row{position:sticky!important;top:0!important;z-index:3!important;padding:7px 3px!important;background:#f8faf9!important;border-bottom:1px solid #dce5df!important}
 #quickDoneFloat .mini-input-row>*{width:100%!important;min-width:0!important;height:30px!important;box-sizing:border-box!important;padding:4px 5px!important;font:400 12px/1.2 system-ui,sans-serif!important}
@@ -35,24 +35,24 @@
 #quickDoneFloat .mini-subtasks-toggle{height:27px!important;padding:2px 4px!important;border:1px solid #dce5df!important;border-radius:6px!important;background:#f6f8f7!important;color:#52665a!important;font-size:10px!important;white-space:nowrap!important}
 #quickDoneFloat .mini-subtasks-wrap{margin:0 3px 7px 84px!important;padding:8px 10px!important;border-left:2px solid #dce5df!important;border-bottom:1px solid #edf0f2!important;background:#fafcfb!important;box-sizing:border-box!important}
 #quickDoneFloat .mini-subtasks-list{display:grid!important;gap:5px!important}
-#quickDoneFloat .mini-subtask{display:grid!important;grid-template-columns:20px minmax(100px,1fr) 28px!important;gap:6px!important;align-items:center!important}
+#quickDoneFloat .mini-subtask{display:grid!important;grid-template-columns:20px minmax(140px,1fr) 58px 72px 92px 28px!important;gap:6px!important;align-items:center!important}
 #quickDoneFloat .mini-subtask input[type=checkbox]{width:16px!important;height:16px!important;accent-color:#4d8c74!important}
 #quickDoneFloat .mini-subtask input[type=text]{width:100%!important;height:28px!important;padding:4px 7px!important;font-size:12px!important}
 #quickDoneFloat .mini-subtask.is-done input[type=text]{text-decoration:line-through!important;color:#829087!important}
-#quickDoneFloat .mini-subtask>button{height:27px!important;padding:0!important;background:transparent!important;color:#9b6262!important;font-size:17px!important}
+#quickDoneFloat .mini-subtask>button{height:27px!important;padding:0!important;background:transparent!important;color:#9b6262!important;font-size:17px!important}#quickDoneFloat .mini-subtask input[type=text]{height:28px!important;min-width:0!important;padding:4px 6px!important;font-size:11px!important}#quickDoneFloat .mini-subtask-focus{border:1px solid #dce7df!important;border-radius:6px!important;background:#f2f7f3!important;color:#416b52!important;font-size:10px!important;white-space:nowrap!important}#quickDoneFloat .mini-subtask-actual{font-size:9px!important;color:#697889!important;white-space:nowrap!important}
 #quickDoneFloat .mini-subtask-add{display:flex!important;gap:6px!important;margin-top:7px!important}
 #quickDoneFloat .mini-subtask-add input{flex:1!important;height:30px!important;padding:5px 8px!important;font-size:12px!important}
 #quickDoneFloat .mini-subtask-add button{height:30px!important;padding:0 12px!important;background:#e8f0e7!important;color:#506b48!important;font-size:12px!important}
 #quickDoneFloat .mini-status-note{display:block!important;flex:0 0 auto!important;padding-top:8px!important;color:#87919d!important;font-size:11px!important}
 @media(max-width:700px){
- #quickDoneFloat{width:calc(100vw - 20px)!important;max-width:calc(100vw - 20px)!important;height:auto!important;max-height:78dvh!important;padding:10px!important;border-radius:12px!important}
+ #quickDoneFloat{width:calc(100vw - 20px)!important;max-width:calc(100vw - 20px)!important;height:min(78dvh,560px)!important;max-height:calc(100dvh - 16px)!important;min-height:260px!important;resize:both!important;padding:10px!important;border-radius:12px!important}
  #quickDoneFloat .quick-done-head{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important}
  #quickDoneFloat .quick-done-head>strong{grid-column:1!important;grid-row:1!important}
  #quickDoneFloat .quick-done-head>button{grid-column:2!important;grid-row:1!important}
  #quickDoneFloat .mini-popup-controls{grid-column:1/3!important;grid-row:2!important;justify-content:flex-start!important;align-items:center!important;flex-wrap:wrap!important;gap:5px!important}
  #quickDoneFloat .mini-popup-controls select,#quickDoneFloat .mini-popup-controls input[type=date]{width:122px!important;max-width:36vw!important}
  #quickDoneFloat #miniKindTabs button{padding:0 8px!important}
- #quickDoneFloat .mini-table-scroll{max-height:calc(78dvh - 190px)!important}
+ #quickDoneFloat .mini-table-scroll{max-height:none!important;min-height:0!important;flex:1 1 auto!important}
  #quickDoneFloat .mini-input-row,#quickDoneFloat #miniColumnHeaders,#quickDoneFloat .quick-done-row{--mini-columns:24px 42px minmax(56px,1fr) 60px 68px 24px;grid-template-columns:var(--mini-columns)!important;column-gap:3px!important;row-gap:4px!important;grid-template-rows:30px 30px!important}
  #quickDoneFloat .mini-input-row{min-height:70px!important}
  #quickDoneFloat .mini-input-row>[data-col="0"],#quickDoneFloat .quick-done-row>[data-col="0"]{grid-column:1!important;grid-row:1!important}
@@ -1884,7 +1884,7 @@ function settings(){return get(SETTINGS,{category:'기본',kind:'업무'})}
 function enabledCalendars(){
  try{
   const domains=get('moyo-life-system-v1',[]);
-  const names=domains.flatMap(d=>(d.groups||[]).filter(g=>(g.tasks||[]).some(t=>t.miniEnabled===true)).map(g=>g.name));
+  const names=domains.flatMap(d=>(d.groups||[]).filter(g=>g.miniEnabled===true||(g.tasks||[]).some(t=>t.miniEnabled===true)).map(g=>g.name));
   return [...new Set(['기본',...names])];
  }catch{return ['기본']}
 }
@@ -1918,7 +1918,7 @@ function sync(v,date){
  item.minutes=parseMinutes(v.minutes);
  item.actualMinutes=Math.ceil((Number(v.actualSeconds)||parseMinutes(v.actualMinutes)*60)/60);
  item.dueDate=v.plannedDate||null;item.plannedDate=v.plannedDate||null;item.miniTask=true;
- item.subtasks=(v.subtasks||[]).map(s=>({title:s.title||'',done:!!s.done}));
+ item.subtasks=(v.subtasks||[]).map(s=>({title:s.title||'',done:!!s.done,minutes:s.minutes||'',actualSeconds:Number(s.actualSeconds)||0,actualMinutes:Number(s.actualMinutes)||0}));
  if(v.done&&v.completedAt){
   const completed=new Date(v.completedAt),actualDay=day(completed);
   item.completedAt=v.completedAt;item.completedDate=actualDay;item.date=actualDay;item.displayDate=actualDay;
@@ -1964,9 +1964,13 @@ function stopOtherTimers(exceptId){
  for(const [key,arr] of Object.entries(data)){
   if(!Array.isArray(arr))continue;
   arr.forEach((v,i)=>{
-   if(!v||typeof v!=='object'||!v.focusStartedAt||v.id===exceptId)return;
+   if(!v||typeof v!=='object')return;
    const date=String(key).split('|')[0];
-   stopTimer(v,date,key,i,false);
+   if(v.focusStartedAt&&v.id!==exceptId)stopTimer(v,date,key,i,false);
+   (v.subtasks||[]).forEach((sub,j)=>{
+    const sid=String(v.id)+'::sub::'+j;
+    if(sub.focusStartedAt&&sid!==exceptId){sub.actualSeconds=actualSeconds(sub)+elapsed(sub);sub.actualMinutes=Math.ceil(sub.actualSeconds/60);sub.focusStartedAt=null;saveEntry(v,date,key,i,false)}
+   });
   });
  }
 }
@@ -1974,19 +1978,29 @@ function makeSubtasks(v,date,key,index,group){
  const wrap=document.createElement('div');wrap.className='mini-subtasks-wrap';
  const list=document.createElement('div');list.className='mini-subtasks-list';
  (v.subtasks||[]).forEach((sub,i)=>{
-  const line=document.createElement('div');line.className='mini-subtask';line.classList.toggle('is-done',!!sub.done);
+  const line=document.createElement('div');line.className='mini-subtask';line.dataset.index=String(i);line.classList.toggle('is-done',!!sub.done);
   const check=document.createElement('input');check.type='checkbox';check.checked=!!sub.done;check.setAttribute('aria-label','하위 할 일 완료');
   check.onchange=()=>{sub.done=check.checked;saveEntry(v,date,key,index)};
   const title=document.createElement('input');title.type='text';title.value=sub.title||'';title.placeholder='하위 할 일';title.setAttribute('aria-label','하위 할 일 수정');
   title.onchange=()=>{sub.title=title.value.trim();v.subtasks=(v.subtasks||[]).filter(x=>x.title);saveEntry(v,date,key,index)};
+  const planned=document.createElement('input');planned.type='text';planned.inputMode='numeric';planned.placeholder='분';planned.value=sub.minutes??'';planned.title='예상 소요시간(분)';planned.setAttribute('aria-label','하위 항목 예상 소요시간(분)');
+  planned.onchange=()=>{sub.minutes=planned.value.trim();saveEntry(v,date,key,index)};
+  const focus=document.createElement('button');focus.type='button';focus.className='mini-subtask-focus';focus.title='하위 항목 포커스 시작/종료';
+  const total=actualSeconds(sub);focus.textContent=sub.focusStartedAt?'■ '+duration(total+elapsed(sub)):'▶ 시작';
+  const actual=document.createElement('small');actual.className='mini-subtask-actual';actual.textContent=total?'실제 '+duration(total):'실제 —';
+  focus.onclick=()=>{
+   const sid=String(v.id)+'::sub::'+i;
+   if(sub.focusStartedAt){sub.actualSeconds=actualSeconds(sub)+elapsed(sub);sub.actualMinutes=Math.ceil(sub.actualSeconds/60);sub.focusStartedAt=null;saveEntry(v,date,key,index);return}
+   stopOtherTimers(sid);sub.focusStartedAt=Date.now();saveEntry(v,date,key,index);
+  };
   const del=document.createElement('button');del.type='button';del.textContent='×';del.title='하위 할 일 삭제';del.setAttribute('aria-label','하위 할 일 삭제');
-  del.onclick=()=>{v.subtasks.splice(i,1);saveEntry(v,date,key,index)};
-  line.append(check,title,del);list.append(line);
+  del.onclick=()=>{if(sub.focusStartedAt){sub.actualSeconds=actualSeconds(sub)+elapsed(sub);sub.focusStartedAt=null}v.subtasks.splice(i,1);saveEntry(v,date,key,index)};
+  line.append(check,title,planned,focus,actual,del);list.append(line);
  });
  const form=document.createElement('div');form.className='mini-subtask-add';
  const input=document.createElement('input');input.type='text';input.placeholder='이 할 일에 딸린 하위 할 일';input.setAttribute('aria-label','하위 할 일 추가');
  const add=document.createElement('button');add.type='button';add.textContent='추가';
- const addOne=()=>{const title=input.value.trim();if(!title)return;(v.subtasks||(v.subtasks=[])).push({title,done:false});saveEntry(v,date,key,index)};
+ const addOne=()=>{const title=input.value.trim();if(!title)return;(v.subtasks||(v.subtasks=[])).push({title,done:false,minutes:'',actualSeconds:0});saveEntry(v,date,key,index)};
  add.onclick=addOne;input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addOne()}};
  form.append(input,add);wrap.append(list,form);return wrap;
 }
@@ -2052,12 +2066,13 @@ function render(){
   box.append(group);
  });
  if(ticker)clearInterval(ticker);
- if(entries.some(x=>x.value.focusStartedAt)){
+ if(entries.some(x=>x.value.focusStartedAt||(x.value.subtasks||[]).some(sub=>sub.focusStartedAt))){
   ticker=setInterval(()=>{
    box.querySelectorAll('.mini-focus-toggle[data-task-id]').forEach(button=>{
     const entry=entries.find(x=>x.value.id===button.dataset.taskId);
     if(entry&&entry.value.focusStartedAt)button.textContent='■ '+duration(actualSeconds(entry.value)+elapsed(entry.value))+' · 완료';
    });
+   box.querySelectorAll('.mini-subtask-focus').forEach(button=>{const group=button.closest('.mini-task-group');const task=entries.find(x=>x.value.id===group?.querySelector('.mini-focus-toggle')?.dataset.taskId)?.value;const sub=task?.subtasks?.[Number(button.closest('.mini-subtask')?.dataset.index)];if(sub?.focusStartedAt)button.textContent='■ '+duration(actualSeconds(sub)+elapsed(sub))});
   },500);
  }
 }
@@ -2129,7 +2144,7 @@ const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch{return
 const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const id=()=> 'ls-'+Math.random().toString(36).slice(2)+Date.now().toString(36);
 const initial=()=>seed.map(([name,gs])=>({id:id(),name,groups:gs.map(([name,ts])=>({id:id(),name,tasks:ts.map(([title,unit,every])=>({id:id(),title,unit,every,active:false,start:'',last:'',time:'09:00'}))}))}));
-let domains=get(KEY,null)||initial();if(!domains.some(d=>d.name==='기본'))domains.unshift({id:'ls-default-domain',name:'기본',groups:[{id:'ls-default-calendar',name:'기본',tasks:[]}]});else{const base=domains.find(d=>d.name==='기본');if(!base.groups.some(g=>g.name==='기본'))base.groups.unshift({id:'ls-default-calendar',name:'기본',tasks:[]})}const domainOrder=['신체','생활','정서','성장','경제','관계','충만','기본'];domains.sort((a,b)=>{const i=domainOrder.indexOf(a.name),j=domainOrder.indexOf(b.name);return (i<0?999:i)-(j<0?999:j)});set(KEY,domains);let selected=0,expanded=new Set(domains.map(d=>d.id)),visible=get(VIS,{});
+let domains=get(KEY,null)||initial();if(!domains.some(d=>d.name==='기본'))domains.unshift({id:'ls-default-domain',name:'기본',groups:[{id:'ls-default-calendar',name:'기본',tasks:[]}]});else{const base=domains.find(d=>d.name==='기본');if(!base.groups.some(g=>g.name==='기본'))base.groups.unshift({id:'ls-default-calendar',name:'기본',tasks:[]})}const baseForMini=domains.find(d=>d.name==='기본');['업무','개인'].forEach((name,i)=>{let g=baseForMini.groups.find(x=>x.name===name);if(!g){g={id:'ls-mini-calendar-'+(i?'personal':'work'),name,tasks:[],miniEnabled:true};baseForMini.groups.push(g)}else g.miniEnabled=true})const domainOrder=['신체','생활','정서','성장','경제','관계','충만','기본'];domains.sort((a,b)=>{const i=domainOrder.indexOf(a.name),j=domainOrder.indexOf(b.name);return (i<0?999:i)-(j<0?999:j)});set(KEY,domains);let selected=0,expanded=new Set(domains.map(d=>d.id)),visible=get(VIS,{});
 function save(){set(KEY,domains);syncNames();render();tree()}
 function allGroups(){return domains.flatMap(d=>d.groups.map(g=>({domain:d,group:g})))}
 function groupPath(d,g){const parent=d.groups.find(x=>x.id===g.parentId);return parent?groupPath(d,parent)+' / '+g.name:g.name}
